@@ -17,7 +17,7 @@ allowed-tools:
 Create executable phase prompt with discovery, context injection, and task breakdown.
 
 Purpose: Break down roadmap phases into concrete, executable PLAN.md files that Claude can execute.
-Output: One or more PLAN.md files in the phase directory (.planning/phases/XX-name/{phase}-{plan}-PLAN.md)
+Output: One or more PLAN.md files in the phase directory (context/phases/XX-name/{phase}-{plan}-PLAN.md)
 </objective>
 
 <execution_context>
@@ -33,20 +33,20 @@ Output: One or more PLAN.md files in the phase directory (.planning/phases/XX-na
 Phase number: $ARGUMENTS (optional - auto-detects next unplanned phase if not provided)
 
 **Load project state first:**
-@.planning/STATE.md
+@context/STATE.md
 
 **Load roadmap:**
-@.planning/ROADMAP.md
+@context/ROADMAP.md
 
 **Load phase context if exists (created by /iscape:discuss-phase):**
-Check for and read `.planning/phases/XX-name/{phase}-CONTEXT.md` - contains research findings, clarifications, and decisions from phase discussion.
+Check for and read `context/phases/XX-name/{phase}-CONTEXT.md` - contains research findings, clarifications, and decisions from phase discussion.
 
 **Load codebase context if exists:**
-Check for `.planning/codebase/` and load relevant documents based on phase type.
+Check for `context/codebase/` and load relevant documents based on phase type.
 </context>
 
 <process>
-1. Check .planning/ directory exists (error if not - user should run /iscape:new-project)
+1. Check context/ directory exists (error if not - user should run /iscape:new-project)
 2. If phase number provided via $ARGUMENTS, validate it exists in roadmap
 3. If no phase number, detect next unplanned phase from roadmap
 4. Follow plan-phase.md workflow:
@@ -60,7 +60,7 @@ Check for `.planning/codebase/` and load relevant documents based on phase type.
 
 <success_criteria>
 
-- One or more PLAN.md files created in .planning/phases/XX-name/
+- One or more PLAN.md files created in context/phases/XX-name/
 - Each plan has: objective, execution_context, context, tasks, verification, success_criteria, output
 - Tasks are specific enough for Claude to execute
 - User knows next steps (execute plan or review/adjust)
