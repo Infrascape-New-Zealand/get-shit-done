@@ -1,0 +1,32 @@
+{
+  "name": "iscape",
+  "version": "1.0.0",
+  "description": "Infrascape development framework - milestone-based planning with specialist agent orchestration",
+  "author": {
+    "name": "Infrascape"
+  },
+  "license": "MIT",
+  "commands": [
+    "./new-project.md",
+    "./create-roadmap.md",
+    "./map-codebase.md",
+    "./plan-phase.md",
+    "./execute-plan.md",
+    "./progress.md",
+    "./complete-milestone.md",
+    "./discuss-milestone.md",
+    "./new-milestone.md",
+    "./add-phase.md",
+    "./insert-phase.md",
+    "./remove-phase.md",
+    "./discuss-phase.md",
+    "./research-phase.md",
+    "./list-phase-assumptions.md",
+    "./pause-work.md",
+    "./resume-work.md",
+    "./consider-issues.md",
+    "./verify-work.md",
+    "./plan-fix.md",
+    "./help.md"
+  ]
+}
