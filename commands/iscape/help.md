@@ -1,5 +1,5 @@
 ---
-name: gsd:help
+name: iscape:help
 description: Show available GSD commands and usage guide
 ---
 
@@ -21,10 +21,10 @@ Output ONLY the reference content below. Do NOT add:
 
 ## Quick Start
 
-1. `/gsd:new-project` - Initialize project with brief
-2. `/gsd:create-roadmap` - Create roadmap and phases
-3. `/gsd:plan-phase <number>` - Create detailed plan for first phase
-4. `/gsd:execute-plan <path>` - Execute the plan
+1. `/iscape:new-project` - Initialize project with brief
+2. `/iscape:create-roadmap` - Create roadmap and phases
+3. `/iscape:plan-phase <number>` - Create detailed plan for first phase
+4. `/iscape:execute-plan <path>` - Execute the plan
 
 ## Core Workflow
 
@@ -34,7 +34,7 @@ Initialization → Planning → Execution → Milestone Completion
 
 ### Project Initialization
 
-**`/gsd:new-project`**
+**`/iscape:new-project`**
 Initialize new project with brief and configuration.
 
 - Creates `.planning/PROJECT.md` (vision and requirements)
@@ -42,39 +42,39 @@ Initialize new project with brief and configuration.
 - Asks for workflow mode (interactive/yolo) upfront
 - Commits initialization files to git
 
-Usage: `/gsd:new-project`
+Usage: `/iscape:new-project`
 
-**`/gsd:create-roadmap`**
+**`/iscape:create-roadmap`**
 Create roadmap and state tracking for initialized project.
 
 - Creates `.planning/ROADMAP.md` (phase breakdown)
 - Creates `.planning/STATE.md` (project memory)
 - Creates `.planning/phases/` directories
 
-Usage: `/gsd:create-roadmap`
+Usage: `/iscape:create-roadmap`
 
-**`/gsd:map-codebase`**
+**`/iscape:map-codebase`**
 Map an existing codebase for brownfield projects.
 
 - Analyzes codebase with parallel Explore agents
 - Creates `.planning/codebase/` with 7 focused documents
 - Covers stack, architecture, structure, conventions, testing, integrations, concerns
-- Use before `/gsd:new-project` on existing codebases
+- Use before `/iscape:new-project` on existing codebases
 
-Usage: `/gsd:map-codebase`
+Usage: `/iscape:map-codebase`
 
 ### Phase Planning
 
-**`/gsd:discuss-phase <number>`**
+**`/iscape:discuss-phase <number>`**
 Help articulate your vision for a phase before planning.
 
 - Captures how you imagine this phase working
 - Creates CONTEXT.md with your vision, essentials, and boundaries
 - Use when you have ideas about how something should look/feel
 
-Usage: `/gsd:discuss-phase 2`
+Usage: `/iscape:discuss-phase 2`
 
-**`/gsd:research-phase <number>`**
+**`/iscape:research-phase <number>`**
 Comprehensive ecosystem research for niche/complex domains.
 
 - Discovers standard stack, architecture patterns, pitfalls
@@ -82,18 +82,18 @@ Comprehensive ecosystem research for niche/complex domains.
 - Use for 3D, games, audio, shaders, ML, and other specialized domains
 - Goes beyond "which library" to ecosystem knowledge
 
-Usage: `/gsd:research-phase 3`
+Usage: `/iscape:research-phase 3`
 
-**`/gsd:list-phase-assumptions <number>`**
+**`/iscape:list-phase-assumptions <number>`**
 See what Claude is planning to do before it starts.
 
 - Shows Claude's intended approach for a phase
 - Lets you course-correct if Claude misunderstood your vision
 - No files created - conversational output only
 
-Usage: `/gsd:list-phase-assumptions 3`
+Usage: `/iscape:list-phase-assumptions 3`
 
-**`/gsd:plan-phase <number>`**
+**`/iscape:plan-phase <number>`**
 Create detailed execution plan for a specific phase.
 
 - Generates `.planning/phases/XX-phase-name/XX-YY-PLAN.md`
@@ -101,12 +101,12 @@ Create detailed execution plan for a specific phase.
 - Includes verification criteria and success measures
 - Multiple plans per phase supported (XX-01, XX-02, etc.)
 
-Usage: `/gsd:plan-phase 1`
+Usage: `/iscape:plan-phase 1`
 Result: Creates `.planning/phases/01-foundation/01-01-PLAN.md`
 
 ### Execution
 
-**`/gsd:execute-plan <path>`**
+**`/iscape:execute-plan <path>`**
 Execute a PLAN.md file directly.
 
 - Runs plan tasks sequentially
@@ -114,30 +114,30 @@ Execute a PLAN.md file directly.
 - Updates STATE.md with accumulated context
 - Fast execution without loading full skill context
 
-Usage: `/gsd:execute-plan .planning/phases/01-foundation/01-01-PLAN.md`
+Usage: `/iscape:execute-plan .planning/phases/01-foundation/01-01-PLAN.md`
 
 ### Roadmap Management
 
-**`/gsd:add-phase <description>`**
+**`/iscape:add-phase <description>`**
 Add new phase to end of current milestone.
 
 - Appends to ROADMAP.md
 - Uses next sequential number
 - Updates phase directory structure
 
-Usage: `/gsd:add-phase "Add admin dashboard"`
+Usage: `/iscape:add-phase "Add admin dashboard"`
 
-**`/gsd:insert-phase <after> <description>`**
+**`/iscape:insert-phase <after> <description>`**
 Insert urgent work as decimal phase between existing phases.
 
 - Creates intermediate phase (e.g., 7.1 between 7 and 8)
 - Useful for discovered work that must happen mid-milestone
 - Maintains phase ordering
 
-Usage: `/gsd:insert-phase 7 "Fix critical auth bug"`
+Usage: `/iscape:insert-phase 7 "Fix critical auth bug"`
 Result: Creates Phase 7.1
 
-**`/gsd:remove-phase <number>`**
+**`/iscape:remove-phase <number>`**
 Remove a future phase and renumber subsequent phases.
 
 - Deletes phase directory and all references
@@ -145,30 +145,30 @@ Remove a future phase and renumber subsequent phases.
 - Only works on future (unstarted) phases
 - Git commit preserves historical record
 
-Usage: `/gsd:remove-phase 17`
+Usage: `/iscape:remove-phase 17`
 Result: Phase 17 deleted, phases 18-20 become 17-19
 
 ### Milestone Management
 
-**`/gsd:discuss-milestone`**
+**`/iscape:discuss-milestone`**
 Figure out what you want to build in the next milestone.
 
 - Reviews what shipped in previous milestone
 - Helps you identify features to add, improve, or fix
-- Routes to /gsd:new-milestone when ready
+- Routes to /iscape:new-milestone when ready
 
-Usage: `/gsd:discuss-milestone`
+Usage: `/iscape:discuss-milestone`
 
-**`/gsd:new-milestone <name>`**
+**`/iscape:new-milestone <name>`**
 Create a new milestone with phases for an existing project.
 
 - Adds milestone section to ROADMAP.md
 - Creates phase directories
 - Updates STATE.md for new milestone
 
-Usage: `/gsd:new-milestone "v2.0 Features"`
+Usage: `/iscape:new-milestone "v2.0 Features"`
 
-**`/gsd:complete-milestone <version>`**
+**`/iscape:complete-milestone <version>`**
 Archive completed milestone and prepare for next version.
 
 - Creates MILESTONES.md entry with stats
@@ -176,11 +176,11 @@ Archive completed milestone and prepare for next version.
 - Creates git tag for the release
 - Prepares workspace for next version
 
-Usage: `/gsd:complete-milestone 1.0.0`
+Usage: `/iscape:complete-milestone 1.0.0`
 
 ### Progress Tracking
 
-**`/gsd:progress`**
+**`/iscape:progress`**
 Check project status and intelligently route to next action.
 
 - Shows visual progress bar and completion percentage
@@ -190,31 +190,31 @@ Check project status and intelligently route to next action.
 - Offers to execute next plan or create it if missing
 - Detects 100% milestone completion
 
-Usage: `/gsd:progress`
+Usage: `/iscape:progress`
 
 ### Session Management
 
-**`/gsd:resume-work`**
+**`/iscape:resume-work`**
 Resume work from previous session with full context restoration.
 
 - Reads STATE.md for project context
 - Shows current position and recent progress
 - Offers next actions based on project state
 
-Usage: `/gsd:resume-work`
+Usage: `/iscape:resume-work`
 
-**`/gsd:pause-work`**
+**`/iscape:pause-work`**
 Create context handoff when pausing work mid-phase.
 
 - Creates .continue-here file with current state
 - Updates STATE.md session continuity section
 - Captures in-progress work context
 
-Usage: `/gsd:pause-work`
+Usage: `/iscape:pause-work`
 
 ### Issue Management
 
-**`/gsd:consider-issues`**
+**`/iscape:consider-issues`**
 Review deferred issues with codebase context.
 
 - Analyzes all open issues against current codebase state
@@ -223,11 +223,11 @@ Review deferred issues with codebase context.
 - Identifies natural fits for upcoming phases
 - Offers batch actions (close, insert phase, note for planning)
 
-Usage: `/gsd:consider-issues`
+Usage: `/iscape:consider-issues`
 
 ### Utility Commands
 
-**`/gsd:help`**
+**`/iscape:help`**
 Show this command reference.
 
 ## Files & Structure
@@ -258,7 +258,7 @@ Show this command reference.
 
 ## Workflow Modes
 
-Set during `/gsd:new-project`:
+Set during `/iscape:new-project`:
 
 **Interactive Mode**
 
@@ -279,31 +279,31 @@ Change anytime by editing `.planning/config.json`
 **Starting a new project:**
 
 ```
-/gsd:new-project
-/gsd:create-roadmap
-/gsd:plan-phase 1
-/gsd:execute-plan .planning/phases/01-foundation/01-01-PLAN.md
+/iscape:new-project
+/iscape:create-roadmap
+/iscape:plan-phase 1
+/iscape:execute-plan .planning/phases/01-foundation/01-01-PLAN.md
 ```
 
 **Resuming work after a break:**
 
 ```
-/gsd:progress  # See where you left off and continue
+/iscape:progress  # See where you left off and continue
 ```
 
 **Adding urgent mid-milestone work:**
 
 ```
-/gsd:insert-phase 5 "Critical security fix"
-/gsd:plan-phase 5.1
-/gsd:execute-plan .planning/phases/05.1-critical-security-fix/05.1-01-PLAN.md
+/iscape:insert-phase 5 "Critical security fix"
+/iscape:plan-phase 5.1
+/iscape:execute-plan .planning/phases/05.1-critical-security-fix/05.1-01-PLAN.md
 ```
 
 **Completing a milestone:**
 
 ```
-/gsd:complete-milestone 1.0.0
-/gsd:new-project  # Start next milestone
+/iscape:complete-milestone 1.0.0
+/iscape:new-project  # Start next milestone
 ```
 
 ## Getting Help
@@ -311,5 +311,5 @@ Change anytime by editing `.planning/config.json`
 - Read `.planning/PROJECT.md` for project vision
 - Read `.planning/STATE.md` for current context
 - Check `.planning/ROADMAP.md` for phase status
-- Run `/gsd:progress` to check where you're up to
+- Run `/iscape:progress` to check where you're up to
   </reference>
