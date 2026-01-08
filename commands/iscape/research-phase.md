@@ -36,13 +36,13 @@ Output: RESEARCH.md with ecosystem knowledge that informs quality planning.
 Phase number: $ARGUMENTS (required)
 
 **Load project state:**
-@.planning/STATE.md
+@context/STATE.md
 
 **Load roadmap:**
-@.planning/ROADMAP.md
+@context/ROADMAP.md
 
 **Load phase context if exists:**
-Check for `.planning/phases/XX-name/{phase}-CONTEXT.md` - bonus context from discuss-phase.
+Check for `context/phases/XX-name/{phase}-CONTEXT.md` - bonus context from discuss-phase.
 </context>
 
 <process>

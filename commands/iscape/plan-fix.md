@@ -27,8 +27,8 @@ Output: {plan}-FIX.md in the phase directory, ready for execution.
 Plan number: $ARGUMENTS (required - e.g., "04-02" or "09-01")
 
 **Load project state:**
-@.planning/STATE.md
-@.planning/ROADMAP.md
+@context/STATE.md
+@context/ROADMAP.md
 </context>
 
 <process>
@@ -45,7 +45,7 @@ Error: Plan number required.
 
 Usage: /iscape:plan-fix 04-02
 
-This creates a fix plan from .planning/phases/XX-name/04-02-ISSUES.md
+This creates a fix plan from context/phases/XX-name/04-02-ISSUES.md
 ```
 Exit.
 </step>
@@ -55,7 +55,7 @@ Exit.
 
 Search for matching ISSUES.md:
 ```bash
-ls .planning/phases/*/{plan}-ISSUES.md 2>/dev/null
+ls context/phases/*/{plan}-ISSUES.md 2>/dev/null
 ```
 
 If not found:
@@ -109,7 +109,7 @@ Prioritize: critical → major → minor
 <step name="write">
 **Write FIX.md:**
 
-Create `.planning/phases/XX-name/{plan}-FIX.md`:
+Create `context/phases/XX-name/{plan}-FIX.md`:
 
 ```markdown
 ---
@@ -131,14 +131,14 @@ Priority: {critical count} critical, {major count} major, {minor count} minor
 </execution_context>
 
 <context>
-@.planning/STATE.md
-@.planning/ROADMAP.md
+@context/STATE.md
+@context/ROADMAP.md
 
 **Issues being fixed:**
-@.planning/phases/XX-name/{plan}-ISSUES.md
+@context/phases/XX-name/{plan}-ISSUES.md
 
 **Original plan for reference:**
-@.planning/phases/XX-name/{plan}-PLAN.md
+@context/phases/XX-name/{plan}-PLAN.md
 </context>
 
 <tasks>
@@ -160,7 +160,7 @@ Before declaring plan complete:
 </success_criteria>
 
 <output>
-After completion, create `.planning/phases/XX-name/{plan}-FIX-SUMMARY.md`
+After completion, create `context/phases/XX-name/{plan}-FIX-SUMMARY.md`
 </output>
 ```
 </step>
@@ -192,7 +192,7 @@ Would you like to:
 ```
 
 Use AskUserQuestion to get response.
-If execute: `/iscape:execute-plan .planning/phases/XX-name/{plan}-FIX.md`
+If execute: `/iscape:execute-plan context/phases/XX-name/{plan}-FIX.md`
 </step>
 
 </process>

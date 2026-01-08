@@ -21,10 +21,10 @@ Output: {phase}-CONTEXT.md capturing the user's vision for the phase
 Phase number: $ARGUMENTS (required)
 
 **Load project state first:**
-@.planning/STATE.md
+@context/STATE.md
 
 **Load roadmap:**
-@.planning/ROADMAP.md
+@context/ROADMAP.md
 </context>
 
 <process>

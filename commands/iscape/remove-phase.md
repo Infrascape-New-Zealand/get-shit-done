@@ -17,8 +17,8 @@ Output: Phase deleted, all subsequent phases renumbered, git commit as historica
 </objective>
 
 <execution_context>
-@.planning/ROADMAP.md
-@.planning/STATE.md
+@context/ROADMAP.md
+@context/STATE.md
 </execution_context>
 
 <process>
@@ -44,8 +44,8 @@ Exit.
 Load project state:
 
 ```bash
-cat .planning/STATE.md 2>/dev/null
-cat .planning/ROADMAP.md 2>/dev/null
+cat context/STATE.md 2>/dev/null
+cat context/ROADMAP.md 2>/dev/null
 ```
 
 Parse current phase number from STATE.md "Current Position" section.
@@ -88,7 +88,7 @@ Exit.
 3. Check for SUMMARY.md files in phase directory:
 
 ```bash
-ls .planning/phases/{target}-*/*-SUMMARY.md 2>/dev/null
+ls context/phases/{target}-*/*-SUMMARY.md 2>/dev/null
 ```
 
 If any SUMMARY.md files exist:
@@ -109,7 +109,7 @@ Exit.
 Collect information about the phase being removed:
 
 1. Extract phase name from ROADMAP.md heading: `### Phase {target}: {Name}`
-2. Find phase directory: `.planning/phases/{target}-{slug}/`
+2. Find phase directory: `context/phases/{target}-{slug}/`
 3. Find all subsequent phases (integer and decimal) that need renumbering
 
 **Subsequent phase detection:**
@@ -133,7 +133,7 @@ Present removal summary and confirm:
 Removing Phase {target}: {Name}
 
 This will:
-- Delete: .planning/phases/{target}-{slug}/
+- Delete: context/phases/{target}-{slug}/
 - Renumber {N} subsequent phases:
   - Phase 18 → Phase 17
   - Phase 18.1 → Phase 17.1
@@ -150,9 +150,9 @@ Wait for confirmation.
 Delete the target phase directory if it exists:
 
 ```bash
-if [ -d ".planning/phases/{target}-{slug}" ]; then
-  rm -rf ".planning/phases/{target}-{slug}"
-  echo "Deleted: .planning/phases/{target}-{slug}/"
+if [ -d "context/phases/{target}-{slug}" ]; then
+  rm -rf "context/phases/{target}-{slug}"
+  echo "Deleted: context/phases/{target}-{slug}/"
 fi
 ```
 
@@ -166,7 +166,7 @@ For each phase directory that needs renumbering (in reverse order to avoid confl
 
 ```bash
 # Example: renaming 18-dashboard to 17-dashboard
-mv ".planning/phases/18-dashboard" ".planning/phases/17-dashboard"
+mv "context/phases/18-dashboard" "context/phases/17-dashboard"
 ```
 
 Process in descending order (20→19, then 19→18, then 18→17) to avoid overwriting.
@@ -241,8 +241,8 @@ Search for and update phase references inside plan files:
 
 ```bash
 # Find files that reference the old phase numbers
-grep -r "Phase 18" .planning/phases/17-*/ 2>/dev/null
-grep -r "Phase 19" .planning/phases/18-*/ 2>/dev/null
+grep -r "Phase 18" context/phases/17-*/ 2>/dev/null
+grep -r "Phase 19" context/phases/18-*/ 2>/dev/null
 # etc.
 ```
 
@@ -253,7 +253,7 @@ Update any internal references to reflect new numbering.
 Stage and commit the removal:
 
 ```bash
-git add .planning/
+git add context/
 git commit -m "chore: remove phase {target} ({original-phase-name})"
 ```
 
@@ -267,7 +267,7 @@ Present completion summary:
 Phase {target} ({original-name}) removed.
 
 Changes:
-- Deleted: .planning/phases/{target}-{slug}/
+- Deleted: context/phases/{target}-{slug}/
 - Renumbered: Phases {first-renumbered}-{last-old} → {first-renumbered-1}-{last-new}
 - Updated: ROADMAP.md, STATE.md
 - Committed: chore: remove phase {target} ({original-name})
