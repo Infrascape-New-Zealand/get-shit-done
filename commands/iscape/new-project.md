@@ -14,7 +14,7 @@ Initialize a new project through comprehensive context gathering.
 
 This is the most leveraged moment in any project. Deep questioning here means better plans, better execution, better outcomes.
 
-Creates `.planning/` with PROJECT.md and config.json.
+Creates `context/` with PROJECT.md and config.json.
 
 </objective>
 
@@ -35,7 +35,7 @@ Creates `.planning/` with PROJECT.md and config.json.
 
 1. **Abort if project exists:**
    ```bash
-   [ -f .planning/PROJECT.md ] && echo "ERROR: Project already initialized. Use /iscape:progress" && exit 1
+   [ -f context/PROJECT.md ] && echo "ERROR: Project already initialized. Use /iscape:progress" && exit 1
    ```
 
 2. **Initialize git repo in THIS directory** (required even if inside a parent repo):
@@ -54,7 +54,7 @@ Creates `.planning/` with PROJECT.md and config.json.
    # Check for existing code files
    CODE_FILES=$(find . -name "*.ts" -o -name "*.js" -o -name "*.py" -o -name "*.go" -o -name "*.rs" -o -name "*.swift" -o -name "*.java" 2>/dev/null | grep -v node_modules | grep -v .git | head -20)
    HAS_PACKAGE=$([ -f package.json ] || [ -f requirements.txt ] || [ -f Cargo.toml ] || [ -f go.mod ] || [ -f Package.swift ] && echo "yes")
-   HAS_CODEBASE_MAP=$([ -d .planning/codebase ] && echo "yes")
+   HAS_CODEBASE_MAP=$([ -d context/codebase ] && echo "yes")
    ```
 
    **You MUST run all bash commands above using the Bash tool before proceeding.**
@@ -63,7 +63,7 @@ Creates `.planning/` with PROJECT.md and config.json.
 
 <step name="brownfield_offer">
 
-**If existing code detected and .planning/codebase/ doesn't exist:**
+**If existing code detected and context/codebase/ doesn't exist:**
 
 Check the results from setup step:
 - If `CODE_FILES` is non-empty OR `HAS_PACKAGE` is "yes"
@@ -142,7 +142,7 @@ Loop until "Create PROJECT.md" selected.
 
 <step name="project">
 
-Synthesize all context into `.planning/PROJECT.md` using the template from `templates/project.md`.
+Synthesize all context into `context/PROJECT.md` using the template from `templates/project.md`.
 
 **For greenfield projects:**
 
@@ -173,7 +173,7 @@ All Active requirements are hypotheses until shipped and validated.
 
 Infer Validated requirements from existing code:
 
-1. Read `.planning/codebase/ARCHITECTURE.md` and `STACK.md`
+1. Read `context/codebase/ARCHITECTURE.md` and `STACK.md`
 2. Identify what the codebase already does
 3. These become the initial Validated set
 
@@ -248,14 +248,14 @@ Use AskUserQuestion:
 
 **Depth controls compression tolerance, not artificial inflation.** All depths use 2-3 tasks per plan. Comprehensive means "don't compress complex work"—it doesn't mean "pad simple work to hit a number."
 
-Create `.planning/config.json` with chosen mode and depth using `templates/config.json` structure.
+Create `context/config.json` with chosen mode and depth using `templates/config.json` structure.
 
 </step>
 
 <step name="commit">
 
 ```bash
-git add .planning/PROJECT.md .planning/config.json
+git add context/PROJECT.md context/config.json
 git commit -m "$(cat <<'EOF'
 docs: initialize [project-name]
 
@@ -275,9 +275,9 @@ Present completion with next steps (see ~/.claude/get-shit-done/references/conti
 ```
 Project initialized:
 
-- Project: .planning/PROJECT.md
-- Config: .planning/config.json (mode: [chosen mode])
-[If .planning/codebase/ exists:] - Codebase: .planning/codebase/ (7 documents)
+- Project: context/PROJECT.md
+- Config: context/config.json (mode: [chosen mode])
+[If context/codebase/ exists:] - Codebase: context/codebase/ (7 documents)
 
 ---
 
@@ -298,8 +298,8 @@ Project initialized:
 
 <output>
 
-- `.planning/PROJECT.md`
-- `.planning/config.json`
+- `context/PROJECT.md`
+- `context/config.json`
 
 </output>
 
