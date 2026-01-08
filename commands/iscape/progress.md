@@ -21,7 +21,7 @@ Provides situational awareness before continuing work.
 <step name="verify">
 **Verify planning structure exists:**
 
-If no `.planning/` directory:
+If no `context/` directory:
 
 ```
 No planning structure found.
@@ -37,9 +37,9 @@ If missing STATE.md or ROADMAP.md: inform what's missing, suggest running `/isca
 <step name="load">
 **Load full project context:**
 
-- Read `.planning/STATE.md` for living memory (position, decisions, issues)
-- Read `.planning/ROADMAP.md` for phase structure and objectives
-- Read `.planning/PROJECT.md` for current state (What This Is, Core Value, Requirements)
+- Read `context/STATE.md` for living memory (position, decisions, issues)
+- Read `context/ROADMAP.md` for phase structure and objectives
+- Read `context/PROJECT.md` for current state (What This Is, Core Value, Requirements)
   </step>
 
 <step name="recent">
@@ -97,11 +97,11 @@ CONTEXT: [✓ if CONTEXT.md exists | - if not]
 List files in the current phase directory:
 
 ```bash
-ls -1 .planning/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null | wc -l
-ls -1 .planning/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null | wc -l
-ls -1 .planning/phases/[current-phase-dir]/*-ISSUES.md 2>/dev/null | wc -l
-ls -1 .planning/phases/[current-phase-dir]/*-FIX.md 2>/dev/null | wc -l
-ls -1 .planning/phases/[current-phase-dir]/*-FIX-SUMMARY.md 2>/dev/null | wc -l
+ls -1 context/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null | wc -l
+ls -1 context/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null | wc -l
+ls -1 context/phases/[current-phase-dir]/*-ISSUES.md 2>/dev/null | wc -l
+ls -1 context/phases/[current-phase-dir]/*-FIX.md 2>/dev/null | wc -l
+ls -1 context/phases/[current-phase-dir]/*-FIX-SUMMARY.md 2>/dev/null | wc -l
 ```
 
 State: "This phase has {X} plans, {Y} summaries, {Z} issues files, {W} fix plans."
