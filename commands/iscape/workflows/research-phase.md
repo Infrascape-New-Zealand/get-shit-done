@@ -279,7 +279,7 @@ Execute research queries and document findings as you go:
 <step name="quality_check">
 Before creating RESEARCH.md, run through research-pitfalls.md checklist:
 
-**From ~/.claude/get-shit-done/references/research-pitfalls.md:**
+**From ./references/research-pitfalls.md:**
 
 - [ ] All enumerated items investigated (not just some)
 - [ ] Negative claims verified with official docs
@@ -307,7 +307,7 @@ Create RESEARCH.md using accumulated findings.
 **If phase directory doesn't exist:**
 Create it: `.planning/phases/${PHASE}-${SLUG}/`
 
-Use template from ~/.claude/get-shit-done/templates/research.md
+Use template from ./templates/research.md
 
 Populate sections with verified findings from research execution.
 
