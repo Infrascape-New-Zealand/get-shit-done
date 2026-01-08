@@ -1,5 +1,5 @@
 ---
-name: gsd:create-roadmap
+name: iscape:create-roadmap
 description: Create roadmap with phases for the project
 allowed-tools:
   - Read
@@ -12,7 +12,7 @@ allowed-tools:
 <objective>
 Create project roadmap with phase breakdown.
 
-Roadmaps define what work happens in what order. Run after /gsd:new-project.
+Roadmaps define what work happens in what order. Run after /iscape:new-project.
 </objective>
 
 <execution_context>
@@ -31,7 +31,7 @@ Roadmaps define what work happens in what order. Run after /gsd:new-project.
 <step name="validate">
 ```bash
 # Verify project exists
-[ -f .planning/PROJECT.md ] || { echo "ERROR: No PROJECT.md found. Run /gsd:new-project first."; exit 1; }
+[ -f .planning/PROJECT.md ] || { echo "ERROR: No PROJECT.md found. Run /iscape:new-project first."; exit 1; }
 ```
 </step>
 
@@ -83,15 +83,15 @@ Roadmap created:
 
 **Phase 1: [Name]** — [Goal from ROADMAP.md]
 
-`/gsd:plan-phase 1`
+`/iscape:plan-phase 1`
 
 <sub>`/clear` first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- `/gsd:discuss-phase 1` — gather context first
-- `/gsd:research-phase 1` — investigate unknowns
+- `/iscape:discuss-phase 1` — gather context first
+- `/iscape:research-phase 1` — investigate unknowns
 - Review roadmap
 
 ---
