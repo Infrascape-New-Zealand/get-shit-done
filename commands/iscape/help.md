@@ -1,10 +1,10 @@
 ---
 name: iscape:help
-description: Show available GSD commands and usage guide
+description: Show available Iscape commands and usage guide
 ---
 
 <objective>
-Display the complete GSD command reference.
+Display the complete Iscape command reference.
 
 Output ONLY the reference content below. Do NOT add:
 
@@ -15,9 +15,9 @@ Output ONLY the reference content below. Do NOT add:
   </objective>
 
 <reference>
-# GSD Command Reference
+# Iscape Command Reference
 
-**GSD** (Get Shit Done) creates hierarchical project plans optimized for solo agentic development with Claude Code.
+**Iscape** (Infrascape Development Framework) creates hierarchical project plans optimized for solo agentic development with Claude Code.
 
 ## Quick Start
 
