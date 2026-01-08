@@ -123,7 +123,7 @@ For each failed/partial test, gather:
 If any issues found:
 
 1. Create `.planning/phases/XX-name/{phase}-{plan}-ISSUES.md` if doesn't exist
-2. Use template from `@~/.claude/get-shit-done/templates/uat-issues.md`
+2. Use template from `@./templates/uat-issues.md`
 3. Add each issue:
 
 ```markdown

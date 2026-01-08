@@ -28,10 +28,10 @@ Uses intelligent segmentation:
   </objective>
 
 <execution_context>
-@~/.claude/get-shit-done/workflows/execute-phase.md
-@~/.claude/get-shit-done/templates/summary.md
-@~/.claude/get-shit-done/references/checkpoints.md
-@~/.claude/get-shit-done/references/tdd.md
+@./workflows/execute-phase.md
+@./templates/summary.md
+@./references/checkpoints.md
+@./references/tdd.md
 </execution_context>
 
 <context>
