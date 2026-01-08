@@ -20,14 +20,14 @@ Output: context/codebase/ folder with 7 structured documents about the codebase 
 </objective>
 
 <execution_context>
-@~/.claude/get-shit-done/workflows/map-codebase.md
-@~/.claude/get-shit-done/templates/codebase/stack.md
-@~/.claude/get-shit-done/templates/codebase/architecture.md
-@~/.claude/get-shit-done/templates/codebase/structure.md
-@~/.claude/get-shit-done/templates/codebase/conventions.md
-@~/.claude/get-shit-done/templates/codebase/testing.md
-@~/.claude/get-shit-done/templates/codebase/integrations.md
-@~/.claude/get-shit-done/templates/codebase/concerns.md
+@./workflows/map-codebase.md
+@./templates/codebase/stack.md
+@./templates/codebase/architecture.md
+@./templates/codebase/structure.md
+@./templates/codebase/conventions.md
+@./templates/codebase/testing.md
+@./templates/codebase/integrations.md
+@./templates/codebase/concerns.md
 </execution_context>
 
 <context>

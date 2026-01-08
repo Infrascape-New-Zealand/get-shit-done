@@ -21,12 +21,12 @@ Output: One or more PLAN.md files in the phase directory (context/phases/XX-name
 </objective>
 
 <execution_context>
-@~/.claude/get-shit-done/workflows/plan-phase.md
-@~/.claude/get-shit-done/templates/phase-prompt.md
-@~/.claude/get-shit-done/references/plan-format.md
-@~/.claude/get-shit-done/references/scope-estimation.md
-@~/.claude/get-shit-done/references/checkpoints.md
-@~/.claude/get-shit-done/references/tdd.md
+@./workflows/plan-phase.md
+@./templates/phase-prompt.md
+@./references/plan-format.md
+@./references/scope-estimation.md
+@./references/checkpoints.md
+@./references/tdd.md
 </execution_context>
 
 <context>
