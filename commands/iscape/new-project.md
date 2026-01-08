@@ -270,7 +270,7 @@ EOF
 
 <step name="done">
 
-Present completion with next steps (see ~/.claude/get-shit-done/references/continuation-format.md):
+Present completion with next steps (see ./references/continuation-format.md):
 
 ```
 Project initialized:

@@ -114,7 +114,7 @@ After all tasks complete:
 
 **Always stage files individually.**
 
-See ~/.claude/get-shit-done/references/git-integration.md for full commit strategy.
+See ./references/git-integration.md for full commit strategy.
 </commit_rules>
 
 <success_criteria>

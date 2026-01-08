@@ -157,7 +157,7 @@ Loop until "Create CONTEXT.md" selected.
 <step name="write_context">
 Create CONTEXT.md capturing the user's vision.
 
-Use template from ~/.claude/get-shit-done/templates/context.md
+Use template from ./templates/context.md
 
 **File location:** `.planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md`
 
