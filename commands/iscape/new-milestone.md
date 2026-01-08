@@ -20,13 +20,13 @@ Output: New milestone in ROADMAP.md, updated STATE.md, phase directories created
 Milestone name: $ARGUMENTS (optional - will prompt if not provided)
 
 **Load project state first:**
-@.planning/STATE.md
+@context/STATE.md
 
 **Load roadmap:**
-@.planning/ROADMAP.md
+@context/ROADMAP.md
 
 **Load milestones (if exists):**
-@.planning/MILESTONES.md
+@context/MILESTONES.md
 </context>
 
 <process>

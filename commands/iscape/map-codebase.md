@@ -1,6 +1,6 @@
 ---
 name: iscape:map-codebase
-description: Analyze codebase with parallel Explore agents to produce .planning/codebase/ documents
+description: Analyze codebase with parallel Explore agents to produce context/codebase/ documents
 argument-hint: "[optional: specific area to map, e.g., 'api' or 'auth']"
 allowed-tools:
   - Read
@@ -16,7 +16,7 @@ Analyze existing codebase using parallel Explore agents to produce structured co
 
 This command spawns multiple Explore agents to analyze different aspects of the codebase in parallel, each with fresh context.
 
-Output: .planning/codebase/ folder with 7 structured documents about the codebase state.
+Output: context/codebase/ folder with 7 structured documents about the codebase state.
 </objective>
 
 <execution_context>
@@ -34,7 +34,7 @@ Output: .planning/codebase/ folder with 7 structured documents about the codebas
 Focus area: $ARGUMENTS (optional - if provided, tells agents to focus on specific subsystem)
 
 **Load project state if exists:**
-Check for .planning/STATE.md - loads context if project already initialized
+Check for context/STATE.md - loads context if project already initialized
 
 **This command can run:**
 - Before /iscape:new-project (brownfield codebases) - creates codebase map first
@@ -56,8 +56,8 @@ Check for .planning/STATE.md - loads context if project already initialized
 </when_to_use>
 
 <process>
-1. Check if .planning/codebase/ already exists (offer to refresh or skip)
-2. Create .planning/codebase/ directory structure
+1. Check if context/codebase/ already exists (offer to refresh or skip)
+2. Create context/codebase/ directory structure
 3. Spawn 4 parallel Explore agents to analyze codebase:
    - Agent 1: Stack + Integrations (technology focus)
    - Agent 2: Architecture + Structure (organization focus)
@@ -76,7 +76,7 @@ Check for .planning/STATE.md - loads context if project already initialized
 </process>
 
 <success_criteria>
-- [ ] .planning/codebase/ directory created
+- [ ] context/codebase/ directory created
 - [ ] All 7 codebase documents written
 - [ ] Documents follow template structure
 - [ ] Parallel agents completed without errors

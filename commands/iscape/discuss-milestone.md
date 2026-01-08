@@ -16,13 +16,13 @@ Output: Context gathered, then routes to /iscape:new-milestone
 
 <context>
 **Load project state first:**
-@.planning/STATE.md
+@context/STATE.md
 
 **Load roadmap:**
-@.planning/ROADMAP.md
+@context/ROADMAP.md
 
 **Load milestones (if exists):**
-@.planning/MILESTONES.md
+@context/MILESTONES.md
 </context>
 
 <process>

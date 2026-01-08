@@ -31,10 +31,10 @@ Scope: $ARGUMENTS (optional)
 - If not provided: Test most recently completed plan
 
 **Load project state:**
-@.planning/STATE.md
+@context/STATE.md
 
 **Load roadmap:**
-@.planning/ROADMAP.md
+@context/ROADMAP.md
 </context>
 
 <process>
@@ -45,7 +45,7 @@ Scope: $ARGUMENTS (optional)
    - Generate test checklist
    - Guide through each test via AskUserQuestion
    - Collect and categorize issues
-   - Log issues to `.planning/phases/XX-name/{phase}-{plan}-ISSUES.md`
+   - Log issues to `context/phases/XX-name/{phase}-{plan}-ISSUES.md`
    - Present summary with verdict
 4. Offer next steps based on results:
    - If all passed: Continue to next phase

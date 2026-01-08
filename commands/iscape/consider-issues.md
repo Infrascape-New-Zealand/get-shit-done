@@ -18,9 +18,9 @@ This prevents issue pile-up by providing a triage mechanism with codebase awaren
 </objective>
 
 <context>
-@.planning/ISSUES.md
-@.planning/STATE.md
-@.planning/ROADMAP.md
+@context/ISSUES.md
+@context/STATE.md
+@context/ROADMAP.md
 </context>
 
 <process>
@@ -28,7 +28,7 @@ This prevents issue pile-up by providing a triage mechanism with codebase awaren
 <step name="verify">
 **Verify issues file exists:**
 
-If no `.planning/ISSUES.md`:
+If no `context/ISSUES.md`:
 ```
 No issues file found.
 

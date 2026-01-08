@@ -25,9 +25,9 @@ Output: Milestone archived, roadmap reorganized, git tagged.
 
 <context>
 **Project files:**
-- `.planning/ROADMAP.md`
-- `.planning/STATE.md`
-- `.planning/PROJECT.md`
+- `context/ROADMAP.md`
+- `context/STATE.md`
+- `context/PROJECT.md`
 
 **User input:**
 
@@ -59,7 +59,7 @@ Output: Milestone archived, roadmap reorganized, git tagged.
 
 4. **Archive milestone:**
 
-   - Create `.planning/milestones/v{{version}}-ROADMAP.md`
+   - Create `context/milestones/v{{version}}-ROADMAP.md`
    - Extract full phase details from ROADMAP.md
    - Fill milestone-archive.md template
    - Update ROADMAP.md to one-line summary with link
@@ -87,7 +87,7 @@ Output: Milestone archived, roadmap reorganized, git tagged.
 
 <success_criteria>
 
-- Milestone archived to `.planning/milestones/v{{version}}-ROADMAP.md`
+- Milestone archived to `context/milestones/v{{version}}-ROADMAP.md`
 - ROADMAP.md collapsed to one-line entry
 - PROJECT.md updated with current state
 - Git tag v{{version}} created
