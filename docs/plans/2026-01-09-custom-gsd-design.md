@@ -230,17 +230,17 @@ states and loading patterns.
 
 ---
 
-## Adapted GSD Commands
+## Adapted Commands (iscape namespace)
 
-| Original GSD Command | Adapted Behavior |
-|---------------------|------------------|
-| `/gsd:new-project` | Creates `PROJECT.md` as index to existing PRD, initializes `traceability.md`, `active_work.md` |
-| `/gsd:create-roadmap` | Creates milestone folders under `context/milestones/`, generates `MILESTONE.md` for each |
-| `/gsd:plan-phase` | Creates `PLAN.md` in `context/milestones/vX/phases/XX-name/`, uses natural language task format |
-| `/gsd:execute-plan` | Project Lead agent parses plan, orchestrates specialist agents, writes to `SUMMARY.md` and `decision_register/` |
-| `/gsd:progress` | Reads `active_work.md`, shows in-flight tasks across milestones |
-| `/gsd:pause-work` | Creates handoff in `session_handoffs/`, updates `active_work.md` |
-| `/gsd:resume-work` | Reads from `session_handoffs/`, restores context |
+| Command | Behavior |
+|---------|----------|
+| `/iscape:new-project` | Creates `PROJECT.md` as index to existing PRD, initializes `traceability.md`, `active_work.md` |
+| `/iscape:create-roadmap` | Creates milestone folders under `context/milestones/`, generates `MILESTONE.md` for each |
+| `/iscape:plan-phase` | Creates `PLAN.md` in `context/milestones/vX/phases/XX-name/`, uses natural language task format |
+| `/iscape:execute-plan` | Project Lead agent parses plan, orchestrates specialist agents, writes to `SUMMARY.md` and `decision_register/` |
+| `/iscape:progress` | Reads `active_work.md`, shows in-flight tasks across milestones |
+| `/iscape:pause-work` | Creates handoff in `session_handoffs/`, updates `active_work.md` |
+| `/iscape:resume-work` | Reads from `session_handoffs/`, restores context |
 
 ### New/Modified Behaviors
 
@@ -414,20 +414,27 @@ project_lead_agent:
 2. Create directory structure templates
 3. Create file templates (PROJECT.md, traceability.md, active_work.md, MILESTONE.md)
 
-### Phase 2: Command Adaptation
-4. Fork/modify GSD commands to use new structure
-5. Update path references in all commands
-6. Implement Project Lead orchestration in execute-plan
+### Phase 2: Namespace Rebrand
+4. Copy `commands/gsd/` to `commands/iscape/`
+5. Rename all command references from `gsd:` to `iscape:`
+6. Update plugin.json to register `iscape` namespace
+7. Update internal cross-references between commands
 
-### Phase 3: Migration
-7. Migrate existing `context/poc/` to `context/milestones/v0.1/phases/01-poc/`
-8. Create PROJECT.md index for ComplianceFlow PRD
-9. Initialize traceability.md with existing requirements
+### Phase 3: Command Adaptation
+8. Modify commands for new directory structure
+9. Update path references (`.planning/` → `context/milestones/`)
+10. Implement Project Lead orchestration in execute-plan
+11. Add agent consultation parsing to plan execution
 
-### Phase 4: Validation
-10. Test full workflow with a new phase
-11. Validate agent orchestration works as designed
-12. Refine based on friction points
+### Phase 4: Migration
+12. Migrate existing `context/poc/` to `context/milestones/v0.1/phases/01-poc/`
+13. Create PROJECT.md index for ComplianceFlow PRD
+14. Initialize traceability.md with existing requirements
+
+### Phase 5: Validation
+15. Test full workflow with a new phase
+16. Validate agent orchestration works as designed
+17. Refine based on friction points
 
 ---
 
