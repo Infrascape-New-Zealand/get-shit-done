@@ -44,8 +44,8 @@ Phase number: $ARGUMENTS (required)
 Validate phase exists in roadmap:
 
 ```bash
-if [ -f .planning/ROADMAP.md ]; then
-  grep -A5 "Phase ${PHASE}:" .planning/ROADMAP.md
+if [ -f context/ROADMAP.md ]; then
+  grep -A5 "Phase ${PHASE}:" context/ROADMAP.md
 fi
 ```
 
@@ -71,8 +71,8 @@ Continue to check_existing.
 Check if RESEARCH.md already exists for this phase:
 
 ```bash
-ls .planning/phases/${PHASE}-*/RESEARCH.md 2>/dev/null
-ls .planning/phases/${PHASE}-*/${PHASE}-RESEARCH.md 2>/dev/null
+ls context/phases/${PHASE}-*/RESEARCH.md 2>/dev/null
+ls context/phases/${PHASE}-*/${PHASE}-RESEARCH.md 2>/dev/null
 ```
 
 **If exists:**
@@ -100,12 +100,12 @@ Load available context to inform research direction:
 
 **1. Project context:**
 ```bash
-cat .planning/PROJECT.md 2>/dev/null | head -50
+cat context/PROJECT.md 2>/dev/null | head -50
 ```
 
 **2. Phase context (if exists from /iscape:discuss-phase):**
 ```bash
-cat .planning/phases/${PHASE}-*/${PHASE}-CONTEXT.md 2>/dev/null
+cat context/phases/${PHASE}-*/${PHASE}-CONTEXT.md 2>/dev/null
 ```
 
 If CONTEXT.md exists, use it to understand:
@@ -115,7 +115,7 @@ If CONTEXT.md exists, use it to understand:
 
 **3. Prior phase decisions:**
 ```bash
-cat .planning/STATE.md 2>/dev/null | grep -A20 "## Accumulated Decisions"
+cat context/STATE.md 2>/dev/null | grep -A20 "## Accumulated Decisions"
 ```
 
 These may constrain technology choices.
@@ -302,10 +302,10 @@ Before creating RESEARCH.md, run through research-pitfalls.md checklist:
 <step name="write_research">
 Create RESEARCH.md using accumulated findings.
 
-**File location:** `.planning/phases/${PHASE}-${SLUG}/${PHASE}-RESEARCH.md`
+**File location:** `context/phases/${PHASE}-${SLUG}/${PHASE}-RESEARCH.md`
 
 **If phase directory doesn't exist:**
-Create it: `.planning/phases/${PHASE}-${SLUG}/`
+Create it: `context/phases/${PHASE}-${SLUG}/`
 
 Use template from ./templates/research.md
 
@@ -345,7 +345,7 @@ Write file.
 Present RESEARCH.md summary to user:
 
 ```
-Created: .planning/phases/${PHASE}-${SLUG}/${PHASE}-RESEARCH.md
+Created: context/phases/${PHASE}-${SLUG}/${PHASE}-RESEARCH.md
 
 ## Research Summary
 
@@ -382,7 +382,7 @@ What's next?
 Commit phase research:
 
 ```bash
-git add .planning/phases/${PHASE}-${SLUG}/${PHASE}-RESEARCH.md
+git add context/phases/${PHASE}-${SLUG}/${PHASE}-RESEARCH.md
 git commit -m "$(cat <<'EOF'
 docs(${PHASE}): complete phase research
 

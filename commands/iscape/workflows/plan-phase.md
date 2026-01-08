@@ -20,8 +20,8 @@ Decimal phases enable urgent work insertion without renumbering:
 3. ./references/scope-estimation.md
 4. ./references/checkpoints.md
 5. ./references/tdd.md
-6. .planning/ROADMAP.md
-7. .planning/PROJECT.md
+6. context/ROADMAP.md
+7. context/PROJECT.md
 
 **Load domain expertise from ROADMAP:**
 - Parse ROADMAP.md's `## Domain Expertise` section for paths
@@ -44,24 +44,24 @@ Create an executable phase prompt (PLAN.md). PLAN.md IS the prompt that Claude e
 <process>
 
 <step name="load_project_state" priority="first">
-Read `.planning/STATE.md` and parse:
+Read `context/STATE.md` and parse:
 - Current position (which phase we're planning)
 - Accumulated decisions (constraints on this phase)
 - Deferred issues (candidates for inclusion)
 - Blockers/concerns (things this phase may address)
 - Brief alignment status
 
-If STATE.md missing but .planning/ exists, offer to reconstruct or continue without.
+If STATE.md missing but context/ exists, offer to reconstruct or continue without.
 </step>
 
 <step name="load_codebase_context">
 Check for codebase map:
 
 ```bash
-ls .planning/codebase/*.md 2>/dev/null
+ls context/codebase/*.md 2>/dev/null
 ```
 
-**If .planning/codebase/ exists:** Load relevant documents based on phase type:
+**If context/codebase/ exists:** Load relevant documents based on phase type:
 
 | Phase Keywords | Load These |
 |----------------|------------|
@@ -81,8 +81,8 @@ Track extracted constraints for PLAN.md context section.
 Check roadmap and existing phases:
 
 ```bash
-cat .planning/ROADMAP.md
-ls .planning/phases/
+cat context/ROADMAP.md
+ls context/phases/
 ```
 
 If multiple phases available, ask which one to plan. If obvious (first incomplete phase), proceed.
@@ -137,7 +137,7 @@ For niche domains (3D, games, audio, shaders, ML), suggest `/iscape:research-pha
 **1. Scan all summary frontmatter (cheap - first ~25 lines):**
 
 ```bash
-for f in .planning/phases/*/*-SUMMARY.md; do
+for f in context/phases/*/*-SUMMARY.md; do
   # Extract frontmatter only (between first two --- markers)
   sed -n '1,/^---$/p; /^---$/q' "$f" | head -30
 done
@@ -183,7 +183,7 @@ Only now open and read complete SUMMARY.md files for the selected relevant phase
 **From ISSUES.md:**
 
 ```bash
-cat .planning/ISSUES.md 2>/dev/null
+cat context/ISSUES.md 2>/dev/null
 ```
 
 Assess each open issue - relevant to this phase? Waiting long enough? Natural to address now? Blocking something?
@@ -219,10 +219,10 @@ ls -la src/ 2>/dev/null
 cat package.json 2>/dev/null | head -20
 
 # Check for ecosystem research (from /iscape:research-phase)
-cat .planning/phases/XX-name/${PHASE}-RESEARCH.md 2>/dev/null
+cat context/phases/XX-name/${PHASE}-RESEARCH.md 2>/dev/null
 
 # Check for phase context (from /iscape:discuss-phase)
-cat .planning/phases/XX-name/${PHASE}-CONTEXT.md 2>/dev/null
+cat context/phases/XX-name/${PHASE}-CONTEXT.md 2>/dev/null
 ```
 
 **If RESEARCH.md exists:** Use standard_stack (these libraries), architecture_patterns (follow in task structure), dont_hand_roll (NEVER custom solutions for listed problems), common_pitfalls (inform verification), code_examples (reference in actions).
@@ -282,7 +282,7 @@ After tasks, assess against quality degradation curve.
 
 **Check depth setting:**
 ```bash
-cat .planning/config.json 2>/dev/null | grep depth
+cat context/config.json 2>/dev/null | grep depth
 ```
 
 <depth_aware_splitting>
@@ -354,7 +354,7 @@ Wait for confirmation. If "adjust": revise. If "start over": return to gather_ph
 <step name="write_phase_prompt">
 Use template from `./templates/phase-prompt.md`.
 
-**Single plan:** Write to `.planning/phases/XX-name/{phase}-01-PLAN.md`
+**Single plan:** Write to `context/phases/XX-name/{phase}-01-PLAN.md`
 
 **Multiple plans:** Write separate files ({phase}-01-PLAN.md, {phase}-02-PLAN.md, etc.)
 
@@ -372,13 +372,13 @@ Inject automatically-assembled context package from read_project_history step:
 
 ```markdown
 <context>
-@.planning/PROJECT.md
-@.planning/ROADMAP.md
-@.planning/STATE.md
+@context/PROJECT.md
+@context/ROADMAP.md
+@context/STATE.md
 
 # Auto-selected based on dependency graph (from frontmatter):
-@.planning/phases/XX-name/YY-ZZ-SUMMARY.md
-@.planning/phases/AA-name/BB-CC-SUMMARY.md
+@context/phases/XX-name/YY-ZZ-SUMMARY.md
+@context/phases/AA-name/BB-CC-SUMMARY.md
 
 # Key files from frontmatter (relevant to this phase):
 @path/to/important/file.ts
@@ -404,10 +404,10 @@ Commit phase plan(s):
 
 ```bash
 # Stage all PLAN.md files for this phase
-git add .planning/phases/${PHASE}-*/${PHASE}-*-PLAN.md
+git add context/phases/${PHASE}-*/${PHASE}-*-PLAN.md
 
 # Also stage DISCOVERY.md if it was created during mandatory_discovery
-git add .planning/phases/${PHASE}-*/DISCOVERY.md 2>/dev/null
+git add context/phases/${PHASE}-*/DISCOVERY.md 2>/dev/null
 
 git commit -m "$(cat <<'EOF'
 docs(${PHASE}): create phase plan
@@ -425,7 +425,7 @@ Confirm: "Committed: docs(${PHASE}): create phase plan"
 
 <step name="offer_next">
 ```
-Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
+Phase plan created: context/phases/XX-name/{phase}-01-PLAN.md
 [X] tasks defined.
 
 ---
@@ -434,7 +434,7 @@ Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
 
 **{phase}-01: [Plan Name]** - [objective summary]
 
-`/iscape:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md`
+`/iscape:execute-plan context/phases/XX-name/{phase}-01-PLAN.md`
 
 <sub>`/clear` first - fresh context window</sub>
 
@@ -442,7 +442,7 @@ Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
 
 **Also available:**
 - Review/adjust tasks before executing
-[If multiple plans: - View all plans: `ls .planning/phases/XX-name/*-PLAN.md`]
+[If multiple plans: - View all plans: `ls context/phases/XX-name/*-PLAN.md`]
 
 ---
 ```

@@ -30,10 +30,10 @@ Phase number: $ARGUMENTS (required)
 Validate phase exists in roadmap:
 
 ```bash
-if [ -f .planning/ROADMAP.md ]; then
-  cat .planning/ROADMAP.md | grep "Phase ${PHASE}:"
+if [ -f context/ROADMAP.md ]; then
+  cat context/ROADMAP.md | grep "Phase ${PHASE}:"
 else
-  cat .planning/ROADMAP.md | grep "Phase ${PHASE}:"
+  cat context/ROADMAP.md | grep "Phase ${PHASE}:"
 fi
 ```
 
@@ -62,8 +62,8 @@ Continue to check_existing.
 Check if CONTEXT.md already exists for this phase:
 
 ```bash
-ls .planning/phases/${PHASE}-*/CONTEXT.md 2>/dev/null
-ls .planning/phases/${PHASE}-*/${PHASE}-CONTEXT.md 2>/dev/null
+ls context/phases/${PHASE}-*/CONTEXT.md 2>/dev/null
+ls context/phases/${PHASE}-*/${PHASE}-CONTEXT.md 2>/dev/null
 ```
 
 **If exists:**
@@ -159,10 +159,10 @@ Create CONTEXT.md capturing the user's vision.
 
 Use template from ./templates/context.md
 
-**File location:** `.planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md`
+**File location:** `context/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md`
 
 **If phase directory doesn't exist yet:**
-Create it: `.planning/phases/${PHASE}-${SLUG}/`
+Create it: `context/phases/${PHASE}-${SLUG}/`
 
 Use roadmap phase name for slug (lowercase, hyphens).
 
@@ -183,7 +183,7 @@ Write file.
 Present CONTEXT.md summary:
 
 ```
-Created: .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
+Created: context/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
 
 ## Vision
 [How they imagine it working]
@@ -219,7 +219,7 @@ Created: .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
 Commit phase context:
 
 ```bash
-git add .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
+git add context/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
 git commit -m "$(cat <<'EOF'
 docs(${PHASE}): capture phase context
 

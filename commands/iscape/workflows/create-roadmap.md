@@ -8,14 +8,14 @@ that delivers value. The roadmap provides structure, not detailed tasks.
 
 1. ./templates/roadmap.md
 2. ./templates/state.md
-3. Read `.planning/PROJECT.md` if it exists
+3. Read `context/PROJECT.md` if it exists
    </required_reading>
 
 <process>
 
 <step name="check_brief">
 ```bash
-cat .planning/PROJECT.md 2>/dev/null || echo "No brief found"
+cat context/PROJECT.md 2>/dev/null || echo "No brief found"
 ```
 
 **If no brief exists:**
@@ -85,7 +85,7 @@ Derive phases from the actual work needed.
 
 **Check depth setting:**
 ```bash
-cat .planning/config.json 2>/dev/null | grep depth
+cat context/config.json 2>/dev/null | grep depth
 ```
 
 <depth_guidance>
@@ -225,7 +225,7 @@ Does this look right? (yes / adjust)
 <step name="confirm_phases">
 <config-check>
 ```bash
-cat .planning/config.json 2>/dev/null
+cat context/config.json 2>/dev/null
 ```
 Note: Config may not exist yet (project initialization). If missing, default to interactive mode.
 </config-check>
@@ -264,7 +264,7 @@ If "adjust": Ask what to change, revise, present again.
 ```
 ⚡ Auto-approved: Create roadmap with [N] phases
 
-Proceeding to create .planning/ROADMAP.md...
+Proceeding to create context/ROADMAP.md...
 ```
 
 Proceed directly to create_structure step.
@@ -285,7 +285,7 @@ Loop until "Create roadmap" selected.
 
 <step name="create_structure">
 ```bash
-mkdir -p .planning/phases
+mkdir -p context/phases
 ```
 </step>
 
@@ -295,7 +295,7 @@ Use template from `./templates/roadmap.md`.
 Initial roadmaps use integer phases (1, 2, 3...).
 Decimal phases added later via /iscape:insert-phase command (if it exists).
 
-Write to `.planning/ROADMAP.md` with:
+Write to `context/ROADMAP.md` with:
 
 - Domain Expertise section (paths from detect_domain step, or "None" if skipped)
 - Phase list with names and one-line descriptions
@@ -308,8 +308,8 @@ Write to `.planning/ROADMAP.md` with:
 Create phase directories:
 
 ```bash
-mkdir -p .planning/phases/01-{phase-name}
-mkdir -p .planning/phases/02-{phase-name}
+mkdir -p context/phases/01-{phase-name}
+mkdir -p context/phases/02-{phase-name}
 # etc.
 ```
 
@@ -321,14 +321,14 @@ Create STATE.md — the project's living memory.
 
 Use template from `./templates/state.md`.
 
-Write to `.planning/STATE.md`:
+Write to `context/STATE.md`:
 
 ```markdown
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated [today's date])
+See: context/PROJECT.md (updated [today's date])
 
 **Core value:** [Copy Core Value from PROJECT.md]
 **Current focus:** Phase 1 — [First phase name]
@@ -396,10 +396,10 @@ Resume file: None
 Commit project initialization (brief + roadmap + state together):
 
 ```bash
-git add .planning/PROJECT.md .planning/ROADMAP.md .planning/STATE.md
-git add .planning/phases/
+git add context/PROJECT.md context/ROADMAP.md context/STATE.md
+git add context/phases/
 # config.json if exists
-git add .planning/config.json 2>/dev/null
+git add context/config.json 2>/dev/null
 git commit -m "$(cat <<'EOF'
 docs: initialize [project-name] ([N] phases)
 
@@ -419,9 +419,9 @@ Confirm: "Committed: docs: initialize [project] ([N] phases)"
 <step name="offer_next">
 ```
 Project initialized:
-- Brief: .planning/PROJECT.md
-- Roadmap: .planning/ROADMAP.md
-- State: .planning/STATE.md
+- Brief: context/PROJECT.md
+- Roadmap: context/ROADMAP.md
+- State: context/STATE.md
 - Committed as: docs: initialize [project] ([N] phases)
 
 ---
@@ -469,8 +469,8 @@ Phases are buckets of work, not project management artifacts.
 
 <success_criteria>
 Roadmap is complete when:
-- [ ] `.planning/ROADMAP.md` exists
-- [ ] `.planning/STATE.md` exists (project memory initialized)
+- [ ] `context/ROADMAP.md` exists
+- [ ] `context/STATE.md` exists (project memory initialized)
 - [ ] Phases defined with clear names (count derived from work, not imposed)
 - [ ] **Research flags assigned** (Likely/Unlikely for each phase)
 - [ ] **Research topics listed** for Likely phases

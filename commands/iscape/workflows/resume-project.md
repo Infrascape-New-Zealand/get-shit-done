@@ -2,7 +2,7 @@
 Use this workflow when:
 - Starting a new session on an existing project
 - User says "continue", "what's next", "where were we", "resume"
-- Any planning operation when .planning/ already exists
+- Any planning operation when context/ already exists
 - User returns after time away from project
 </trigger>
 
@@ -19,14 +19,14 @@ Enables seamless session continuity for fully autonomous workflows.
 Check if this is an existing project:
 
 ```bash
-ls .planning/STATE.md 2>/dev/null && echo "Project exists"
-ls .planning/ROADMAP.md 2>/dev/null && echo "Roadmap exists"
-ls .planning/PROJECT.md 2>/dev/null && echo "Project file exists"
+ls context/STATE.md 2>/dev/null && echo "Project exists"
+ls context/ROADMAP.md 2>/dev/null && echo "Roadmap exists"
+ls context/PROJECT.md 2>/dev/null && echo "Project file exists"
 ```
 
 **If STATE.md exists:** Proceed to load_state
 **If only ROADMAP.md/PROJECT.md exist:** Offer to reconstruct STATE.md
-**If .planning/ doesn't exist:** This is a new project - route to /iscape:new-project
+**If context/ doesn't exist:** This is a new project - route to /iscape:new-project
 </step>
 
 <step name="load_state">
@@ -34,8 +34,8 @@ ls .planning/PROJECT.md 2>/dev/null && echo "Project file exists"
 Read and parse STATE.md, then PROJECT.md:
 
 ```bash
-cat .planning/STATE.md
-cat .planning/PROJECT.md
+cat context/STATE.md
+cat context/PROJECT.md
 ```
 
 **From STATE.md extract:**
@@ -62,10 +62,10 @@ Look for incomplete work that needs attention:
 
 ```bash
 # Check for continue-here files (mid-plan resumption)
-ls .planning/phases/*/.continue-here*.md 2>/dev/null
+ls context/phases/*/.continue-here*.md 2>/dev/null
 
 # Check for plans without summaries (incomplete execution)
-for plan in .planning/phases/*/*-PLAN.md; do
+for plan in context/phases/*/*-PLAN.md; do
   summary="${plan/PLAN/SUMMARY}"
   [ ! -f "$summary" ] && echo "Incomplete: $plan"
 done 2>/dev/null
@@ -154,9 +154,9 @@ Present contextual options based on project state:
 What would you like to do?
 
 [Primary action based on state - e.g.:]
-1. Resume from checkpoint (/iscape:execute-plan .planning/phases/XX-name/.continue-here-02-01.md)
+1. Resume from checkpoint (/iscape:execute-plan context/phases/XX-name/.continue-here-02-01.md)
    OR
-1. Execute next plan (/iscape:execute-plan .planning/phases/XX-name/02-02-PLAN.md)
+1. Execute next plan (/iscape:execute-plan context/phases/XX-name/02-02-PLAN.md)
    OR
 1. Discuss Phase 3 context (/iscape:discuss-phase 3) [if CONTEXT.md missing]
    OR
@@ -172,7 +172,7 @@ What would you like to do?
 **Note:** When offering phase planning, check for CONTEXT.md existence first:
 
 ```bash
-ls .planning/phases/XX-name/CONTEXT.md 2>/dev/null
+ls context/phases/XX-name/CONTEXT.md 2>/dev/null
 ```
 
 If missing, suggest discuss-phase before plan. If exists, offer plan directly.
@@ -258,7 +258,7 @@ This handles cases where:
 
 - Project predates STATE.md introduction
 - File was accidentally deleted
-- Cloning repo without full .planning/ state
+- Cloning repo without full context/ state
   </reconstruction>
 
 <quick_resume>
