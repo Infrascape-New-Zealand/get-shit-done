@@ -12,7 +12,7 @@ Read STATE.md before any operation to load project context.
 Before any operation, read project state:
 
 ```bash
-cat .planning/STATE.md 2>/dev/null
+cat context/STATE.md 2>/dev/null
 ```
 
 **If file exists:** Parse and internalize:
@@ -23,7 +23,7 @@ cat .planning/STATE.md 2>/dev/null
 - Blockers/concerns (things to watch for)
 - Brief alignment status
 
-**If file missing but .planning/ exists:**
+**If file missing but context/ exists:**
 
 ```
 STATE.md missing but planning artifacts exist.
@@ -32,7 +32,7 @@ Options:
 2. Continue without project state (may lose accumulated context)
 ```
 
-**If .planning/ doesn't exist:** Error - project not initialized.
+**If context/ doesn't exist:** Error - project not initialized.
 
 This ensures every execution has full project context.
 </step>
@@ -44,11 +44,11 @@ Find the next plan to execute:
 - Identify first plan without corresponding SUMMARY
 
 ```bash
-cat .planning/ROADMAP.md
+cat context/ROADMAP.md
 # Look for phase with "In progress" status
 # Then find plans in that phase
-ls .planning/phases/XX-name/*-PLAN.md 2>/dev/null | sort
-ls .planning/phases/XX-name/*-SUMMARY.md 2>/dev/null | sort
+ls context/phases/XX-name/*-PLAN.md 2>/dev/null | sort
+ls context/phases/XX-name/*-SUMMARY.md 2>/dev/null | sort
 ```
 
 **Logic:**
@@ -61,8 +61,8 @@ ls .planning/phases/XX-name/*-SUMMARY.md 2>/dev/null | sort
 
 Phase directories can be integer or decimal format:
 
-- Integer: `.planning/phases/01-foundation/01-01-PLAN.md`
-- Decimal: `.planning/phases/01.1-hotfix/01.1-01-PLAN.md`
+- Integer: `context/phases/01-foundation/01-01-PLAN.md`
+- Decimal: `context/phases/01.1-hotfix/01.1-01-PLAN.md`
 
 Parse phase number from path (handles both formats):
 
@@ -80,7 +80,7 @@ Confirm with user if ambiguous.
 
 <config-check>
 ```bash
-cat .planning/config.json 2>/dev/null
+cat context/config.json 2>/dev/null
 ```
 </config-check>
 
@@ -129,7 +129,7 @@ Plans are divided into segments by checkpoints. Each segment is routed to optima
 
 ```bash
 # Find all checkpoints and their types
-grep -n "type=\"checkpoint" .planning/phases/XX-name/{phase}-{plan}-PLAN.md
+grep -n "type=\"checkpoint" context/phases/XX-name/{phase}-{plan}-PLAN.md
 ```
 
 **2. Analyze execution strategy:**
@@ -206,7 +206,7 @@ No segmentation benefit - execute entirely in main
 ```
 Use Task tool with subagent_type="general-purpose":
 
-Prompt: "Execute plan at .planning/phases/{phase}-{plan}-PLAN.md
+Prompt: "Execute plan at context/phases/{phase}-{plan}-PLAN.md
 
 This is an autonomous plan (no checkpoints). Execute all tasks, create SUMMARY.md in phase directory, commit with message following plan's commit guidance.
 
@@ -221,7 +221,7 @@ When complete, report: plan name, tasks completed, SUMMARY path, commit hash."
 Execute segment-by-segment:
 
 For each autonomous segment:
-  Spawn subagent with prompt: "Execute tasks [X-Y] from plan at .planning/phases/{phase}-{plan}-PLAN.md. Read the plan for full context and deviation rules. Do NOT create SUMMARY or commit - just execute these tasks and report results."
+  Spawn subagent with prompt: "Execute tasks [X-Y] from plan at context/phases/{phase}-{plan}-PLAN.md. Read the plan for full context and deviation rules. Do NOT create SUMMARY or commit - just execute these tasks and report results."
 
   Wait for subagent completion
 
@@ -401,7 +401,7 @@ Committing...
 <step name="load_prompt">
 Read the plan prompt:
 ```bash
-cat .planning/phases/XX-name/{phase}-{plan}-PLAN.md
+cat context/phases/XX-name/{phase}-{plan}-PLAN.md
 ````
 
 This IS the execution instructions. Follow it exactly.
@@ -415,7 +415,7 @@ Before executing, check if previous phase had issues:
 
 ```bash
 # Find previous phase summary
-ls .planning/phases/*/SUMMARY.md 2>/dev/null | sort -r | head -2 | tail -1
+ls context/phases/*/SUMMARY.md 2>/dev/null | sort -r | head -2 | tail -1
 ```
 
 If previous phase SUMMARY.md has "Issues Encountered" != "None" or "Next Phase Readiness" mentions blockers:
@@ -705,7 +705,7 @@ Proceed with proposed change? (yes / different approach / defer)
 
 **Trigger:** Improvement that would enhance code but isn't essential now
 
-**Action:** Add to .planning/ISSUES.md automatically, continue task
+**Action:** Add to context/ISSUES.md automatically, continue task
 
 **Examples:**
 
@@ -720,7 +720,7 @@ Proceed with proposed change? (yes / different approach / defer)
 
 **Process:**
 
-1. Create .planning/ISSUES.md if doesn't exist (use `./templates/issues.md`)
+1. Create context/ISSUES.md if doesn't exist (use `./templates/issues.md`)
 2. Add entry with ISS-XXX number (auto-increment)
 3. Brief notification: `📋 Logged enhancement: [brief] (ISS-XXX)`
 4. Continue task without implementing
@@ -794,7 +794,7 @@ None - plan executed exactly as written.
 
 ### Deferred Enhancements
 
-Logged to .planning/ISSUES.md for future consideration:
+Logged to context/ISSUES.md for future consideration:
 
 - ISS-001: Refactor UserService into smaller modules (discovered in Task 3)
 - ISS-002: Add connection pooling for Redis (discovered in Task 6)
@@ -1091,7 +1091,7 @@ Pass timing data to SUMMARY.md creation.
 Create `{phase}-{plan}-SUMMARY.md` as specified in the prompt's `<output>` section.
 Use ./templates/summary.md for structure.
 
-**File location:** `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
+**File location:** `context/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 
 **Frontmatter population:**
 
@@ -1270,7 +1270,7 @@ Present issues and wait for acknowledgment before proceeding.
 Update the roadmap file:
 
 ```bash
-ROADMAP_FILE=".planning/ROADMAP.md"
+ROADMAP_FILE="context/ROADMAP.md"
 ```
 
 **If more plans remain in this phase:**
@@ -1293,14 +1293,14 @@ PLAN.md was already committed during plan-phase. This final commit captures exec
 **1. Stage execution artifacts:**
 
 ```bash
-git add .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
-git add .planning/STATE.md
+git add context/phases/XX-name/{phase}-{plan}-SUMMARY.md
+git add context/STATE.md
 ```
 
 **2. Stage roadmap file:**
 
 ```bash
-git add .planning/ROADMAP.md
+git add context/ROADMAP.md
 ```
 
 **3. Verify staging:**
@@ -1321,7 +1321,7 @@ Tasks completed: [N]/[N]
 - [Task 2 name]
 - [Task 3 name]
 
-SUMMARY: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+SUMMARY: context/phases/XX-name/{phase}-{plan}-SUMMARY.md
 EOF
 )"
 ```
@@ -1337,7 +1337,7 @@ Tasks completed: 3/3
 - Password hashing with bcrypt
 - Email confirmation flow
 
-SUMMARY: .planning/phases/08-user-auth/08-02-registration-SUMMARY.md
+SUMMARY: context/phases/08-user-auth/08-02-registration-SUMMARY.md
 EOF
 )"
 ```
@@ -1357,7 +1357,7 @@ For commit message conventions, see ./references/git-integration.md
 </step>
 
 <step name="update_codebase_map">
-**If .planning/codebase/ exists:**
+**If context/codebase/ exists:**
 
 Check what changed across all task commits in this plan:
 
@@ -1389,11 +1389,11 @@ git diff --name-only ${FIRST_TASK}^..HEAD 2>/dev/null
 Make single targeted edits - add a bullet point, update a path, or remove a stale entry. Don't rewrite sections.
 
 ```bash
-git add .planning/codebase/*.md
+git add context/codebase/*.md
 git commit --amend --no-edit  # Include in metadata commit
 ```
 
-**If .planning/codebase/ doesn't exist:**
+**If context/codebase/ doesn't exist:**
 Skip this step.
 </step>
 
@@ -1402,8 +1402,8 @@ Skip this step.
 
 ```bash
 # Check if ISSUES.md exists and has issues from current phase
-if [ -f .planning/ISSUES.md ]; then
-  grep -E "Phase ${PHASE}.*Task" .planning/ISSUES.md | grep -v "^#" || echo "NO_ISSUES_THIS_PHASE"
+if [ -f context/ISSUES.md ]; then
+  grep -E "Phase ${PHASE}.*Task" context/ISSUES.md | grep -v "^#" || echo "NO_ISSUES_THIS_PHASE"
 fi
 ```
 
@@ -1446,8 +1446,8 @@ Do NOT skip this verification. Do NOT assume phase or milestone completion witho
 List files in the phase directory:
 
 ```bash
-ls -1 .planning/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null | wc -l
-ls -1 .planning/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null | wc -l
+ls -1 context/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null | wc -l
+ls -1 context/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null | wc -l
 ```
 
 State the counts: "This phase has [X] plans and [Y] summaries."
@@ -1472,7 +1472,7 @@ Identify the next unexecuted plan:
 <if mode="yolo">
 ```
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
+Summary: context/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
 {Y} of {X} plans complete for Phase {Z}.
 
@@ -1485,7 +1485,7 @@ Loop back to identify_plan step automatically.
 <if mode="interactive" OR="custom with gates.execute_next_plan true">
 ```
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
+Summary: context/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
 {Y} of {X} plans complete for Phase {Z}.
 
@@ -1495,7 +1495,7 @@ Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
 **{phase}-{next-plan}: [Plan Name]** — [objective from next PLAN.md]
 
-`/iscape:execute-plan .planning/phases/{phase-dir}/{phase}-{next-plan}-PLAN.md`
+`/iscape:execute-plan context/phases/{phase-dir}/{phase}-{next-plan}-PLAN.md`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -1544,7 +1544,7 @@ Read ROADMAP.md to get the next phase's name and goal.
 
 ```
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
+Summary: context/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
 ## ✓ Phase {Z}: {Phase Name} Complete
 
@@ -1579,7 +1579,7 @@ All {Y} plans finished.
 🎉 MILESTONE COMPLETE!
 
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
+Summary: context/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
 ## ✓ Phase {Z}: {Phase Name} Complete
 

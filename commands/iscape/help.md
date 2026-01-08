@@ -37,8 +37,8 @@ Initialization → Planning → Execution → Milestone Completion
 **`/iscape:new-project`**
 Initialize new project with brief and configuration.
 
-- Creates `.planning/PROJECT.md` (vision and requirements)
-- Creates `.planning/config.json` (workflow mode)
+- Creates `context/PROJECT.md` (vision and requirements)
+- Creates `context/config.json` (workflow mode)
 - Asks for workflow mode (interactive/yolo) upfront
 - Commits initialization files to git
 
@@ -47,9 +47,9 @@ Usage: `/iscape:new-project`
 **`/iscape:create-roadmap`**
 Create roadmap and state tracking for initialized project.
 
-- Creates `.planning/ROADMAP.md` (phase breakdown)
-- Creates `.planning/STATE.md` (project memory)
-- Creates `.planning/phases/` directories
+- Creates `context/ROADMAP.md` (phase breakdown)
+- Creates `context/STATE.md` (project memory)
+- Creates `context/phases/` directories
 
 Usage: `/iscape:create-roadmap`
 
@@ -57,7 +57,7 @@ Usage: `/iscape:create-roadmap`
 Map an existing codebase for brownfield projects.
 
 - Analyzes codebase with parallel Explore agents
-- Creates `.planning/codebase/` with 7 focused documents
+- Creates `context/codebase/` with 7 focused documents
 - Covers stack, architecture, structure, conventions, testing, integrations, concerns
 - Use before `/iscape:new-project` on existing codebases
 
@@ -96,13 +96,13 @@ Usage: `/iscape:list-phase-assumptions 3`
 **`/iscape:plan-phase <number>`**
 Create detailed execution plan for a specific phase.
 
-- Generates `.planning/phases/XX-phase-name/XX-YY-PLAN.md`
+- Generates `context/phases/XX-phase-name/XX-YY-PLAN.md`
 - Breaks phase into concrete, actionable tasks
 - Includes verification criteria and success measures
 - Multiple plans per phase supported (XX-01, XX-02, etc.)
 
 Usage: `/iscape:plan-phase 1`
-Result: Creates `.planning/phases/01-foundation/01-01-PLAN.md`
+Result: Creates `context/phases/01-foundation/01-01-PLAN.md`
 
 ### Execution
 
@@ -114,7 +114,7 @@ Execute a PLAN.md file directly.
 - Updates STATE.md with accumulated context
 - Fast execution without loading full skill context
 
-Usage: `/iscape:execute-plan .planning/phases/01-foundation/01-01-PLAN.md`
+Usage: `/iscape:execute-plan context/phases/01-foundation/01-01-PLAN.md`
 
 ### Roadmap Management
 
@@ -233,7 +233,7 @@ Show this command reference.
 ## Files & Structure
 
 ```
-.planning/
+context/
 ├── PROJECT.md            # Project vision
 ├── ROADMAP.md            # Current phase breakdown
 ├── STATE.md              # Project memory & context
@@ -272,7 +272,7 @@ Set during `/iscape:new-project`:
 - Executes plans without confirmation
 - Only stops for critical checkpoints
 
-Change anytime by editing `.planning/config.json`
+Change anytime by editing `context/config.json`
 
 ## Common Workflows
 
@@ -282,7 +282,7 @@ Change anytime by editing `.planning/config.json`
 /iscape:new-project
 /iscape:create-roadmap
 /iscape:plan-phase 1
-/iscape:execute-plan .planning/phases/01-foundation/01-01-PLAN.md
+/iscape:execute-plan context/phases/01-foundation/01-01-PLAN.md
 ```
 
 **Resuming work after a break:**
@@ -296,7 +296,7 @@ Change anytime by editing `.planning/config.json`
 ```
 /iscape:insert-phase 5 "Critical security fix"
 /iscape:plan-phase 5.1
-/iscape:execute-plan .planning/phases/05.1-critical-security-fix/05.1-01-PLAN.md
+/iscape:execute-plan context/phases/05.1-critical-security-fix/05.1-01-PLAN.md
 ```
 
 **Completing a milestone:**
@@ -308,8 +308,8 @@ Change anytime by editing `.planning/config.json`
 
 ## Getting Help
 
-- Read `.planning/PROJECT.md` for project vision
-- Read `.planning/STATE.md` for current context
-- Check `.planning/ROADMAP.md` for phase status
+- Read `context/PROJECT.md` for project vision
+- Read `context/STATE.md` for current context
+- Check `context/ROADMAP.md` for phase status
 - Run `/iscape:progress` to check where you're up to
   </reference>

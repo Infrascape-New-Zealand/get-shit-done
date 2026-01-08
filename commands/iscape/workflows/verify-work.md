@@ -17,7 +17,7 @@ If no arguments:
 - Find most recently modified SUMMARY.md
 
 ```bash
-find .planning/phases -name "*SUMMARY.md" -type f -exec ls -lt {} + | head -5
+find context/phases -name "*SUMMARY.md" -type f -exec ls -lt {} + | head -5
 ```
 
 Read the SUMMARY.md to understand what was built.
@@ -122,7 +122,7 @@ For each failed/partial test, gather:
 
 If any issues found:
 
-1. Create `.planning/phases/XX-name/{phase}-{plan}-ISSUES.md` if doesn't exist
+1. Create `context/phases/XX-name/{phase}-{plan}-ISSUES.md` if doesn't exist
 2. Use template from `@./templates/uat-issues.md`
 3. Add each issue:
 
@@ -137,7 +137,7 @@ If any issues found:
 **Actual:** [What actually happened]
 ```
 
-**Note:** Issues go to phase-scoped file, NOT global `.planning/ISSUES.md`. This keeps UAT findings tied to the specific work being tested and enables `/iscape:plan-fix` to address them.
+**Note:** Issues go to phase-scoped file, NOT global `context/ISSUES.md`. This keeps UAT findings tied to the specific work being tested and enables `/iscape:plan-fix` to address them.
 </step>
 
 <step name="summarize">

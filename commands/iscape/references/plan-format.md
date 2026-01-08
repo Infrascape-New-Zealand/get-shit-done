@@ -27,8 +27,8 @@ Output: [...]
 </objective>
 
 <context>
-@.planning/PROJECT.md
-@.planning/ROADMAP.md
+@context/PROJECT.md
+@context/ROADMAP.md
 @relevant/source/files.ts
 </context>
 
@@ -273,9 +273,9 @@ Use @file references to load context for the prompt:
 
 ```markdown
 <context>
-@.planning/PROJECT.md           # Project vision
-@.planning/ROADMAP.md         # Phase structure
-@.planning/phases/02-auth/DISCOVERY.md  # Discovery results
+@context/PROJECT.md           # Project vision
+@context/ROADMAP.md         # Phase structure
+@context/phases/02-auth/DISCOVERY.md  # Discovery results
 @src/lib/db.ts                # Existing database setup
 @src/types/user.ts            # Existing type definitions
 </context>
@@ -320,7 +320,7 @@ Specify the SUMMARY.md structure:
 
 ```markdown
 <output>
-After completion, create `.planning/phases/XX-name/SUMMARY.md`:
+After completion, create `context/phases/XX-name/SUMMARY.md`:
 
 # Phase X: Name Summary
 

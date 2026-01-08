@@ -10,8 +10,8 @@ You're a thinking partner helping them crystallize their vision for what's next.
 Load project state:
 
 ```bash
-cat .planning/STATE.md
-cat .planning/ROADMAP.md
+cat context/STATE.md
+cat context/ROADMAP.md
 ```
 
 **If no active milestone (expected state after completing previous):**
@@ -125,7 +125,7 @@ Loop until "Create milestone" selected.
 <step name="write_context">
 Write milestone context to file for handoff.
 
-**File:** `.planning/MILESTONE-CONTEXT.md`
+**File:** `context/MILESTONE-CONTEXT.md`
 
 Use template from ./templates/milestone-context.md
 
@@ -138,7 +138,7 @@ Populate with:
 
 ```bash
 # Write the context file
-cat > .planning/MILESTONE-CONTEXT.md << 'EOF'
+cat > context/MILESTONE-CONTEXT.md << 'EOF'
 # Milestone Context
 
 **Generated:** [today's date]
@@ -206,7 +206,7 @@ Milestone scope defined:
 **Suggested milestone:** v[X.Y] [Theme Name]
 **Estimated phases:** [N]
 
-Context saved to `.planning/MILESTONE-CONTEXT.md`
+Context saved to `context/MILESTONE-CONTEXT.md`
 
 ---
 

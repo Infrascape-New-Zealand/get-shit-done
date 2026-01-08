@@ -8,9 +8,9 @@ This is used after completing a milestone when ready to define the next chunk of
 **Read these files NOW:**
 
 1. ./templates/roadmap.md (milestone-grouped format)
-2. `.planning/ROADMAP.md`
-3. `.planning/STATE.md`
-4. `.planning/MILESTONES.md` (if exists)
+2. `context/ROADMAP.md`
+3. `context/STATE.md`
+4. `context/MILESTONES.md` (if exists)
    </required_reading>
 
 <process>
@@ -19,10 +19,10 @@ This is used after completing a milestone when ready to define the next chunk of
 Load project context:
 
 ```bash
-cat .planning/ROADMAP.md
-cat .planning/STATE.md
-cat .planning/MILESTONES.md 2>/dev/null || echo "No milestones file yet"
-cat .planning/MILESTONE-CONTEXT.md 2>/dev/null || echo "No milestone context file"
+cat context/ROADMAP.md
+cat context/STATE.md
+cat context/MILESTONES.md 2>/dev/null || echo "No milestones file yet"
+cat context/MILESTONE-CONTEXT.md 2>/dev/null || echo "No milestone context file"
 ```
 
 Extract:
@@ -34,7 +34,7 @@ Extract:
 
 **Check for milestone context from discuss-milestone:**
 
-If `.planning/MILESTONE-CONTEXT.md` exists:
+If `context/MILESTONE-CONTEXT.md` exists:
 - This contains context from `/iscape:discuss-milestone`
 - Extract: features, suggested name, phase mapping, constraints
 - Use this to pre-populate milestone details (skip prompting for info already gathered)
@@ -74,7 +74,7 @@ Get milestone name in format: "v[X.Y] [Name]"
 
 ```bash
 # Find highest phase number from roadmap
-grep -E "^### Phase [0-9]+" .planning/ROADMAP.md | tail -1
+grep -E "^### Phase [0-9]+" context/ROADMAP.md | tail -1
 # Extract number, add 1
 ```
 
@@ -83,7 +83,7 @@ Next phase starts at: [last_phase + 1]
 **Check depth setting and gather phases accordingly:**
 
 ```bash
-cat .planning/config.json 2>/dev/null | grep depth
+cat context/config.json 2>/dev/null | grep depth
 ```
 
 | Depth | Phases/Milestone |
@@ -168,7 +168,7 @@ Does this look right? (yes / adjust)
 <step name="confirm_phases">
 <config-check>
 ```bash
-cat .planning/config.json 2>/dev/null
+cat context/config.json 2>/dev/null
 ```
 </config-check>
 
@@ -204,9 +204,9 @@ If "adjust": Ask what to change, revise, present again.
 </step>
 
 <step name="update_roadmap">
-Write new milestone details to `.planning/ROADMAP.md`.
+Write new milestone details to `context/ROADMAP.md`.
 
-**File to update:** `.planning/ROADMAP.md`
+**File to update:** `context/ROADMAP.md`
 
 The main ROADMAP.md file holds full phase details for the active milestone. Archive files in `milestones/` are created only when a milestone ships (via `/iscape:complete-milestone`).
 
@@ -273,8 +273,8 @@ Add rows for all new phases with milestone attribution.
 Create directories for new phases:
 
 ```bash
-mkdir -p .planning/phases/[NN]-[slug]
-mkdir -p .planning/phases/[NN+1]-[slug]
+mkdir -p context/phases/[NN]-[slug]
+mkdir -p context/phases/[NN+1]-[slug]
 # ... for each phase
 ```
 
@@ -282,7 +282,7 @@ Use two-digit padding: `10-name`, `11-name`, etc.
 </step>
 
 <step name="update_state">
-Update `.planning/STATE.md` for new milestone:
+Update `context/STATE.md` for new milestone:
 
 **Update Current Position:**
 
@@ -326,8 +326,8 @@ Resume file: None
 Commit milestone creation:
 
 ```bash
-git add .planning/ROADMAP.md .planning/STATE.md
-git add .planning/phases/
+git add context/ROADMAP.md context/STATE.md
+git add context/phases/
 git commit -m "$(cat <<'EOF'
 docs: create milestone v[X.Y] [Name] ([N] phases)
 
@@ -346,7 +346,7 @@ Confirm: "Committed: docs: create milestone v[X.Y] [Name]"
 Delete the temporary milestone context file if it exists:
 
 ```bash
-rm -f .planning/MILESTONE-CONTEXT.md
+rm -f context/MILESTONE-CONTEXT.md
 ```
 
 This file was a handoff artifact from `/iscape:discuss-milestone`. Now that the milestone is created, the context is persisted in ROADMAP.md and the temporary file is no longer needed.

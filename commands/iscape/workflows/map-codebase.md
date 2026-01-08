@@ -1,5 +1,5 @@
 <purpose>
-Orchestrate parallel Explore agents to analyze codebase and produce structured documents in .planning/codebase/
+Orchestrate parallel Explore agents to analyze codebase and produce structured documents in context/codebase/
 
 Each agent has fresh context and focuses on specific aspects. Output is concise and actionable for planning.
 </purpose>
@@ -21,16 +21,16 @@ Documents are reference material for Claude when planning/executing. Vague descr
 <process>
 
 <step name="check_existing" priority="first">
-Check if .planning/codebase/ already exists:
+Check if context/codebase/ already exists:
 
 ```bash
-ls -la .planning/codebase/ 2>/dev/null
+ls -la context/codebase/ 2>/dev/null
 ```
 
 **If exists:**
 
 ```
-.planning/codebase/ already exists with these documents:
+context/codebase/ already exists with these documents:
 [List files found]
 
 What's next?
@@ -41,7 +41,7 @@ What's next?
 
 Wait for user response.
 
-If "Refresh": Delete .planning/codebase/, continue to create_structure
+If "Refresh": Delete context/codebase/, continue to create_structure
 If "Update": Ask which documents to update, continue to spawn_agents (filtered)
 If "Skip": Exit workflow
 
@@ -50,10 +50,10 @@ Continue to create_structure.
 </step>
 
 <step name="create_structure">
-Create .planning/codebase/ directory:
+Create context/codebase/ directory:
 
 ```bash
-mkdir -p .planning/codebase
+mkdir -p context/codebase
 ```
 
 **Expected output files:**
@@ -305,7 +305,7 @@ For each document:
      - "Not detected" for optional infrastructure
      - "Not applicable" for patterns that don't fit this codebase
      - "No significant concerns" for clean codebase areas
-4. **Write to .planning/codebase/{NAME}.md** (uppercase filename)
+4. **Write to context/codebase/{NAME}.md** (uppercase filename)
 
 **Example filling pattern:**
 
@@ -343,8 +343,8 @@ After all documents written, continue to verify_output.
 Verify all documents created successfully:
 
 ```bash
-ls -la .planning/codebase/
-wc -l .planning/codebase/*.md
+ls -la context/codebase/
+wc -l context/codebase/*.md
 ```
 
 **Verification checklist:**
@@ -361,7 +361,7 @@ Continue to commit_codebase_map.
 Commit the codebase map:
 
 ```bash
-git add .planning/codebase/*.md
+git add context/codebase/*.md
 git commit -m "$(cat <<'EOF'
 docs: map existing codebase
 
@@ -387,7 +387,7 @@ Present completion summary and next steps.
 ```
 Codebase mapping complete.
 
-Created .planning/codebase/:
+Created context/codebase/:
 - STACK.md ([N] lines) - Technologies and dependencies
 - ARCHITECTURE.md ([N] lines) - System design and patterns
 - STRUCTURE.md ([N] lines) - Directory layout and organization
@@ -411,7 +411,7 @@ Created .planning/codebase/:
 
 **Also available:**
 - Re-run mapping: `/iscape:map-codebase`
-- Review specific file: `cat .planning/codebase/STACK.md`
+- Review specific file: `cat context/codebase/STACK.md`
 - Edit any document before proceeding
 
 ---
@@ -423,7 +423,7 @@ End workflow.
 </process>
 
 <success_criteria>
-- .planning/codebase/ directory created
+- context/codebase/ directory created
 - 4 parallel Explore agents spawned with run_in_background=true
 - Agent prompts are specific and actionable
 - TaskOutput used to collect all agent results

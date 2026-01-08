@@ -12,8 +12,8 @@ This is the ritual that separates "development" from "shipped."
 
 1. templates/milestone.md
 2. templates/milestone-archive.md
-3. `.planning/ROADMAP.md`
-4. `.planning/PROJECT.md`
+3. `context/ROADMAP.md`
+4. `context/PROJECT.md`
 
 </required_reading>
 
@@ -21,7 +21,7 @@ This is the ritual that separates "development" from "shipped."
 
 When a milestone completes, this workflow:
 
-1. Extracts full milestone details to `.planning/milestones/v[X.Y]-ROADMAP.md`
+1. Extracts full milestone details to `context/milestones/v[X.Y]-ROADMAP.md`
 2. Updates ROADMAP.md to replace milestone details with one-line summary
 3. Links to archive file for historical reference
 4. Performs full PROJECT.md evolution review
@@ -49,8 +49,8 @@ Uses `templates/milestone-archive.md` template with:
 Check if milestone is truly complete:
 
 ```bash
-cat .planning/ROADMAP.md
-ls .planning/phases/*/SUMMARY.md 2>/dev/null | wc -l
+cat context/ROADMAP.md
+ls context/phases/*/SUMMARY.md 2>/dev/null | wc -l
 ```
 
 **Questions to ask:**
@@ -77,7 +77,7 @@ Total: 4 phases, 8 plans, all complete
 <config-check>
 
 ```bash
-cat .planning/config.json 2>/dev/null
+cat context/config.json 2>/dev/null
 ```
 
 </config-check>
@@ -154,8 +154,8 @@ Milestone Stats:
 Read all phase SUMMARY.md files in milestone range:
 
 ```bash
-cat .planning/phases/01-*/01-*-SUMMARY.md
-cat .planning/phases/02-*/02-*-SUMMARY.md
+cat context/phases/01-*/01-*-SUMMARY.md
+cat context/phases/02-*/02-*-SUMMARY.md
 # ... for each phase in milestone
 ```
 
@@ -176,7 +176,7 @@ Key accomplishments for this milestone:
 
 <step name="create_milestone_entry">
 
-Create or update `.planning/MILESTONES.md`.
+Create or update `context/MILESTONES.md`.
 
 If file doesn't exist:
 
@@ -224,7 +224,7 @@ Perform full PROJECT.md evolution review at milestone completion.
 **Read all phase summaries in this milestone:**
 
 ```bash
-cat .planning/phases/*-*/*-SUMMARY.md
+cat context/phases/*-*/*-SUMMARY.md
 ```
 
 **Full review checklist:**
@@ -363,7 +363,7 @@ Initial user testing showed demand for shape tools.
 
 <step name="reorganize_roadmap">
 
-Update `.planning/ROADMAP.md` to group completed milestone phases.
+Update `context/ROADMAP.md` to group completed milestone phases.
 
 Add milestone headers and collapse completed work:
 
@@ -413,7 +413,7 @@ Extract completed milestone details and create archive file.
 
 **Process:**
 
-1. Create archive file path: `.planning/milestones/v[X.Y]-ROADMAP.md`
+1. Create archive file path: `context/milestones/v[X.Y]-ROADMAP.md`
 
 2. Read `./templates/milestone-archive.md` template
 
@@ -439,7 +439,7 @@ Extract completed milestone details and create archive file.
    - {{ISSUES_RESOLVED_DURING_MILESTONE}} — From summaries
    - {{ISSUES_DEFERRED_TO_LATER}} — From ISSUES.md
 
-6. Write filled template to `.planning/milestones/v[X.Y]-ROADMAP.md`
+6. Write filled template to `context/milestones/v[X.Y]-ROADMAP.md`
 
 7. Update ROADMAP.md:
    - Create/update "## Completed Milestones" section if not exists
@@ -448,7 +448,7 @@ Extract completed milestone details and create archive file.
    - Move next planned milestone to "Current Milestone" position
 
 8. Verify files:
-   - Check archive file exists: `ls .planning/milestones/v[X.Y]-ROADMAP.md`
+   - Check archive file exists: `ls context/milestones/v[X.Y]-ROADMAP.md`
    - Validate ROADMAP.md still parseable
 
 9. Confirm archive complete:
@@ -468,7 +468,7 @@ Update STATE.md to reflect milestone completion.
 ```markdown
 ## Project Reference
 
-See: .planning/PROJECT.md (updated [today])
+See: context/PROJECT.md (updated [today])
 
 **Core value:** [Current core value from PROJECT.md]
 **Current focus:** [Next milestone or "Planning next milestone"]
@@ -508,7 +508,7 @@ Key accomplishments:
 - [Item 2]
 - [Item 3]
 
-See .planning/MILESTONES.md for full details.
+See context/MILESTONES.md for full details.
 EOF
 )"
 ```
@@ -531,11 +531,11 @@ Commit milestone completion including archive file.
 
 ```bash
 # Stage all milestone-related files
-git add .planning/MILESTONES.md
-git add .planning/PROJECT.md
-git add .planning/ROADMAP.md
-git add .planning/STATE.md
-git add .planning/milestones/v[X.Y]-ROADMAP.md
+git add context/MILESTONES.md
+git add context/PROJECT.md
+git add context/ROADMAP.md
+git add context/STATE.md
+git add context/milestones/v[X.Y]-ROADMAP.md
 
 # Commit with descriptive message
 git commit -m "$(cat <<'EOF'
@@ -564,7 +564,7 @@ Shipped:
 - [N] phases ([M] plans, [P] tasks)
 - [One sentence of what shipped]
 
-Summary: .planning/MILESTONES.md
+Summary: context/MILESTONES.md
 Tag: v[X.Y]
 
 ---
