@@ -38,14 +38,14 @@ Uses intelligent segmentation:
 Plan path: $ARGUMENTS
 
 **Load project state first:**
-@.planning/STATE.md
+@context/STATE.md
 
 **Load workflow config:**
-@.planning/config.json
+@context/config.json
 </context>
 
 <process>
-1. Check .planning/ directory exists (error if not - user should run /iscape:new-project)
+1. Check context/ directory exists (error if not - user should run /iscape:new-project)
 2. Verify plan at $ARGUMENTS exists
 3. Check if SUMMARY.md already exists (plan already executed?)
 4. Load workflow config for mode (interactive/yolo)
