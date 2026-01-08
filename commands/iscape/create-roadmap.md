@@ -22,8 +22,8 @@ Roadmaps define what work happens in what order. Run after /iscape:new-project.
 </execution_context>
 
 <context>
-@.planning/PROJECT.md
-@.planning/config.json
+@context/PROJECT.md
+@context/config.json
 </context>
 
 <process>
@@ -31,7 +31,7 @@ Roadmaps define what work happens in what order. Run after /iscape:new-project.
 <step name="validate">
 ```bash
 # Verify project exists
-[ -f .planning/PROJECT.md ] || { echo "ERROR: No PROJECT.md found. Run /iscape:new-project first."; exit 1; }
+[ -f context/PROJECT.md ] || { echo "ERROR: No PROJECT.md found. Run /iscape:new-project first."; exit 1; }
 ```
 </step>
 
@@ -39,7 +39,7 @@ Roadmaps define what work happens in what order. Run after /iscape:new-project.
 Check if roadmap already exists:
 
 ```bash
-[ -f .planning/ROADMAP.md ] && echo "ROADMAP_EXISTS" || echo "NO_ROADMAP"
+[ -f context/ROADMAP.md ] && echo "ROADMAP_EXISTS" || echo "NO_ROADMAP"
 ```
 
 **If ROADMAP_EXISTS:**
@@ -51,7 +51,7 @@ Use AskUserQuestion:
   - "Replace" - Create new roadmap (will overwrite)
   - "Cancel" - Keep existing roadmap
 
-If "View existing": `cat .planning/ROADMAP.md` and exit
+If "View existing": `cat context/ROADMAP.md` and exit
 If "Cancel": Exit
 If "Replace": Continue with workflow
 </step>
@@ -73,8 +73,8 @@ The workflow handles:
 <step name="done">
 ```
 Roadmap created:
-- Roadmap: .planning/ROADMAP.md
-- State: .planning/STATE.md
+- Roadmap: context/ROADMAP.md
+- State: context/STATE.md
 - [N] phases defined
 
 ---
@@ -101,9 +101,9 @@ Roadmap created:
 </process>
 
 <output>
-- `.planning/ROADMAP.md`
-- `.planning/STATE.md`
-- `.planning/phases/XX-name/` directories
+- `context/ROADMAP.md`
+- `context/STATE.md`
+- `context/phases/XX-name/` directories
 </output>
 
 <success_criteria>
