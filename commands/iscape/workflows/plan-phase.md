@@ -275,6 +275,18 @@ See `./references/tdd.md` for TDD plan structure.
 **Critical:** If external resource has CLI/API (Vercel, Stripe, etc.), use type="auto" to automate. Only checkpoint for verification AFTER automation.
 
 See ./references/checkpoints.md for checkpoint structure.
+
+**Verify element requirements:**
+Every `type="auto"` task MUST have:
+- A test file listed in `<files>` element
+- Test creation mentioned in `<action>` element
+- Test command in `<verify>` element that runs that specific test
+
+This ensures work-reviewer can verify task completion via test output.
+
+**Example transformation:**
+- Before: `<verify>curl returns 200</verify>`
+- After: `<verify>npm run test -- tests/api/login.test.ts</verify>` (with test file in `<files>` and test creation in `<action>`)
 </step>
 
 <step name="estimate_scope">
@@ -396,6 +408,24 @@ Inject automatically-assembled context package from read_project_history step:
 
 This ensures every PLAN.md gets optimal context automatically assembled via dependency graph, making execution as informed as possible.
 
+**Mandatory work-review checkpoint:**
+Every plan MUST end with a checkpoint:work-review task:
+
+```xml
+<task type="checkpoint:work-review" gate="blocking">
+  <what-to-review>All tasks in this plan</what-to-review>
+  <verification-commands>
+    - [project test command, e.g., npm run test]
+    - [project build command, e.g., npm run build]
+  </verification-commands>
+  <agent>work-reviewer</agent>
+  <output>context/phases/XX-name/plans/{phase}-{plan}-REVIEW.md</output>
+  <resume-signal>REVIEW.md shows all tasks ✅ Complete, or human approves remediation and gaps are fixed</resume-signal>
+</task>
+```
+
+This is NOT optional. Every plan gets this checkpoint as its final task.
+
 For multi-plan phases: each plan has focused scope, references previous plan summaries (via frontmatter selection), last plan's success criteria includes "Phase X complete".
 </step>
 
@@ -482,6 +512,8 @@ Phase planning complete when:
 - [ ] Each plan: 2-3 tasks (~50% context)
 - [ ] Each task: Type, Files (if auto), Action, Verify, Done
 - [ ] Checkpoints properly structured
+- [ ] Every auto task has test file in `<files>`, test creation in `<action>`, test command in `<verify>`
+- [ ] Plan ends with checkpoint:work-review task
 - [ ] If RESEARCH.md exists: "don't hand-roll" items NOT being custom-built
 - [ ] PLAN file(s) committed to git
 - [ ] User knows next steps
