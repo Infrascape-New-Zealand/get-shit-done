@@ -105,6 +105,41 @@ Plans execute autonomously. Checkpoints formalize interaction points where human
 </task>
 ```
 
+## checkpoint:work-review (quality gate)
+
+**When:** All implementation tasks complete, before phase can be marked done.
+
+**Purpose:** Spawn work-reviewer agent to verify all tasks were completed as designed using git evidence and test results.
+
+**Structure:**
+```xml
+<task type="checkpoint:work-review" gate="blocking">
+  <what-to-review>All tasks in this plan</what-to-review>
+  <verification-commands>
+    - npm run test
+    - npm run build
+  </verification-commands>
+  <agent>work-reviewer</agent>
+  <output>context/phases/XX-name/plans/YY-REVIEW.md</output>
+  <resume-signal>
+    - REVIEW.md shows all tasks ✅ Complete, OR
+    - Human approves remediation, gaps are fixed, re-review passes
+  </resume-signal>
+</task>
+```
+
+**Behavior:**
+1. Execution workflow reaches this checkpoint
+2. Spawns work-reviewer agent with plan file path
+3. Work-reviewer analyzes git history, runs verify commands from all tasks
+4. Produces REVIEW.md with verification status for each task
+5. If gaps exist → blocks, produces recommendations, awaits human approval
+6. After remediation → re-runs work-reviewer until all tasks ✅
+
+**Use for:** Every plan - this is mandatory, not optional.
+
+**Do NOT skip:** Unlike other checkpoints, this one is always required at plan end.
+
 </checkpoint_types>
 
 <execution_protocol>
@@ -275,9 +310,10 @@ Why bad: Verification fatigue. Combine into one checkpoint at end.
 **The golden rule:** If Claude CAN automate it, Claude MUST automate it.
 
 **Checkpoint priority:**
-1. **checkpoint:human-verify** (90%) - Claude automated, human confirms visual/functional correctness
-2. **checkpoint:decision** (9%) - Human makes architectural/technology choices
-3. **checkpoint:human-action** (1%) - Truly unavoidable manual steps with no API/CLI
+1. **checkpoint:work-review** (mandatory) - Quality gate after all tasks, spawns work-reviewer agent
+2. **checkpoint:human-verify** (90%) - Claude automated, human confirms visual/functional correctness
+3. **checkpoint:decision** (9%) - Human makes architectural/technology choices
+4. **checkpoint:human-action** (1%) - Truly unavoidable manual steps with no API/CLI
 
 **When NOT to use checkpoints:**
 - Things Claude can verify programmatically (tests, builds)
