@@ -42,10 +42,10 @@ Output: [What artifacts will be created]
 
 <task type="auto">
   <name>Task 1: [Action-oriented name]</name>
-  <files>path/to/file.ext, another/file.ext</files>
-  <action>[Specific implementation - what to do, how to do it, what to avoid and WHY]</action>
-  <verify>[Command or check to prove it worked]</verify>
-  <done>[Measurable acceptance criteria]</done>
+  <files>path/to/implementation.ext, tests/path/to/test.ext</files>
+  <action>[Specific implementation - what to do, how to do it, what to avoid and WHY. Include: "Create test file covering [specific behaviors]."]</action>
+  <verify>[Test command that runs the specific test file, e.g., npm run test -- tests/path/to/test.ext]</verify>
+  <done>[Measurable acceptance criteria - test passes with specific assertions]</done>
 </task>
 
 <task type="auto">
@@ -94,6 +94,18 @@ Output: [What artifacts will be created]
 </task>
 
 [Continue for all tasks - mix of auto and checkpoints as needed...]
+
+<!-- MANDATORY: Every plan ends with work-review checkpoint -->
+<task type="checkpoint:work-review" gate="blocking">
+  <what-to-review>All tasks in this plan</what-to-review>
+  <verification-commands>
+    - [project test command]
+    - [project build command]
+  </verification-commands>
+  <agent>work-reviewer</agent>
+  <output>context/phases/XX-name/plans/{phase}-{plan}-REVIEW.md</output>
+  <resume-signal>REVIEW.md shows all tasks ✅ Complete, or human approves remediation and gaps are fixed</resume-signal>
+</task>
 
 </tasks>
 
@@ -154,6 +166,8 @@ From create-meta-prompts patterns:
 - Verification is specific and executable
 - Success criteria is measurable
 - Output specification includes SUMMARY.md structure
+- Every auto task includes test file in `<files>` and test command in `<verify>`
+- checkpoint:work-review is mandatory final task (spawns work-reviewer agent)
   </key_elements>
 
 <scope_guidance>
@@ -223,10 +237,22 @@ Output: Working Next.js app with JWT auth, protected routes, and user model.
 
 <task type="auto">
   <name>Task 2: Create login API endpoint</name>
-  <files>src/app/api/auth/login/route.ts</files>
-  <action>POST endpoint that accepts {email, password}, validates against User table using bcrypt, returns JWT in httpOnly cookie with 15-min expiry. Use jose library for JWT (not jsonwebtoken - it has CommonJS issues with Next.js).</action>
-  <verify>curl -X POST /api/auth/login -d '{"email":"test@test.com","password":"test"}' -H "Content-Type: application/json" returns 200 with Set-Cookie header</verify>
-  <done>Valid credentials return 200 + cookie, invalid return 401, missing fields return 400</done>
+  <files>src/app/api/auth/login/route.ts, tests/api/auth/login.test.ts</files>
+  <action>POST endpoint that accepts {email, password}, validates against User table using bcrypt, returns JWT in httpOnly cookie with 15-min expiry. Use jose library for JWT. Create test file covering valid credentials (200 + cookie), invalid credentials (401), and missing fields (400).</action>
+  <verify>npm run test -- tests/api/auth/login.test.ts</verify>
+  <done>All tests pass: valid credentials return 200 + cookie, invalid return 401, missing fields return 400</done>
+</task>
+
+<!-- MANDATORY: Every plan ends with work-review checkpoint -->
+<task type="checkpoint:work-review" gate="blocking">
+  <what-to-review>All tasks in this plan</what-to-review>
+  <verification-commands>
+    - [project test command]
+    - [project build command]
+  </verification-commands>
+  <agent>work-reviewer</agent>
+  <output>context/phases/XX-name/plans/{phase}-{plan}-REVIEW.md</output>
+  <resume-signal>REVIEW.md shows all tasks ✅ Complete, or human approves remediation and gaps are fixed</resume-signal>
 </task>
 
 </tasks>
