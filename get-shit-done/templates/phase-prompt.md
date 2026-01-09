@@ -61,10 +61,10 @@ Output: [What artifacts will be created]
 
 <task type="auto">
   <name>Task 1: [Action-oriented name]</name>
-  <files>path/to/file.ext, another/file.ext</files>
-  <action>[Specific implementation - what to do, how to do it, what to avoid and WHY]</action>
-  <verify>[Command or check to prove it worked]</verify>
-  <done>[Measurable acceptance criteria]</done>
+  <files>path/to/implementation.ext, tests/path/to/test.ext</files>
+  <action>[Specific implementation - what to do, how to do it, what to avoid and WHY. Include: "Create test file covering [specific behaviors]."]</action>
+  <verify>[Test command that runs the specific test file, e.g., npm run test -- tests/path/to/test.ext]</verify>
+  <done>[Measurable acceptance criteria - test passes with specific assertions]</done>
 </task>
 
 <task type="auto">
@@ -92,6 +92,20 @@ Output: [What artifacts will be created]
   <what-built>[What Claude built] - server running at [URL]</what-built>
   <how-to-verify>Visit [URL] and verify: [visual checks only, NO CLI commands]</how-to-verify>
   <resume-signal>Type "approved" or describe issues</resume-signal>
+</task>
+
+[Continue for all tasks - mix of auto and checkpoints as needed...]
+
+<!-- MANDATORY: Every plan ends with work-review checkpoint -->
+<task type="checkpoint:work-review" gate="blocking">
+  <what-to-review>All tasks in this plan</what-to-review>
+  <verification-commands>
+    - [project test command]
+    - [project build command]
+  </verification-commands>
+  <agent>work-reviewer</agent>
+  <output>context/phases/XX-name/plans/{phase}-{plan}-REVIEW.md</output>
+  <resume-signal>REVIEW.md shows all tasks ✅ Complete, or human approves remediation and gaps are fixed</resume-signal>
 </task>
 
 </tasks>
@@ -398,6 +412,7 @@ Output: Working dashboard component.
   <name>Start dev server</name>
   <action>Run `npm run dev` in background, wait for ready</action>
   <verify>curl localhost:3000 returns 200</verify>
+  <done>Dev server running and responding</done>
 </task>
 
 <task type="checkpoint:human-verify" gate="blocking">
