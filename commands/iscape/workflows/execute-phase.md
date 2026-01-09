@@ -244,6 +244,14 @@ No subagent routing
 Quality maintained through small scope (2-3 tasks per plan)
 ```
 
+**Note on checkpoint:work-review:**
+The work-review checkpoint is always the final task. It MUST execute in main context (not subagent) because:
+- It spawns the work-reviewer agent
+- It may require remediation loop with user interaction
+- It produces REVIEW.md that gates completion
+
+When parsing segments, treat checkpoint:work-review like checkpoint:decision - always route to main context.
+
 See step name="segment_execution" for detailed segment execution loop.
 </step>
 
@@ -1032,6 +1040,107 @@ I'll verify after: [verification]
 [Resume signal - e.g., "Type 'done' when complete"]
 ```
 
+**For checkpoint:work-review (mandatory quality gate):**
+
+```
+════════════════════════════════════════
+CHECKPOINT: Work Review
+════════════════════════════════════════
+
+Task [X] of [Y]: Quality Gate - Work Reviewer
+
+Spawning work-reviewer agent to verify all tasks...
+
+Plan: [plan file path]
+Verification commands from plan:
+- [command 1]
+- [command 2]
+
+[Work-reviewer agent output will appear here]
+════════════════════════════════════════
+```
+
+**Execution protocol for checkpoint:work-review:**
+
+1. **Spawn work-reviewer agent:**
+   ```
+   Use Task tool with subagent_type="work-reviewer":
+
+   Prompt: "Review the implementation work for [plan path].
+
+   Parse the plan file to extract:
+   - All task names and their <verify> commands
+   - The <verification-commands> from the work-review checkpoint
+
+   For each task:
+   1. Check git history for commits addressing this task
+   2. Run the task's <verify> command
+   3. Record result: ✅ Complete (code + test pass), ⚠️ Partial (code but test fail/missing), ❌ Missing (no evidence)
+
+   Create REVIEW.md at [output path from checkpoint] with:
+   - Verification status for each task
+   - Git commit evidence
+   - Test output summary
+   - Recommendations for gaps (which agent to spawn)
+
+   If all tasks ✅: Report success
+   If any gaps: Report gaps and await human approval for remediation"
+   ```
+
+2. **Handle work-reviewer result:**
+
+   **If all tasks ✅ Complete:**
+   ```
+   ════════════════════════════════════════
+   WORK REVIEW: PASSED
+   ════════════════════════════════════════
+
+   All [N] tasks verified:
+   ✅ Task 1: [name] - [commit hash]
+   ✅ Task 2: [name] - [commit hash]
+   ...
+
+   REVIEW.md: [path]
+
+   Continuing to completion...
+   ════════════════════════════════════════
+   ```
+   Continue to next step (create_summary).
+
+   **If gaps exist:**
+   ```
+   ════════════════════════════════════════
+   WORK REVIEW: GAPS FOUND
+   ════════════════════════════════════════
+
+   Verification Status:
+   ✅ Task 1: [name] - verified
+   ⚠️ Task 2: [name] - tests failing
+   ❌ Task 3: [name] - not implemented
+
+   REVIEW.md: [path]
+
+   Recommendations:
+   1. Task 2 - Launch test-engineer to fix failing tests
+   2. Task 3 - Launch implementation-engineer to implement
+
+   Proceed with remediation? (yes / review REVIEW.md / stop)
+   ════════════════════════════════════════
+   ```
+
+   Wait for user response.
+
+   - **If "yes":** Spawn recommended agents, then re-run work-reviewer
+   - **If "review REVIEW.md":** Display full REVIEW.md content
+   - **If "stop":** Halt execution, do not create SUMMARY
+
+3. **Remediation loop:**
+
+   After remediation agents complete:
+   - Re-spawn work-reviewer to verify fixes
+   - Repeat until all tasks ✅ or user stops
+   - Each re-review appends to REVIEW.md with timestamp
+
 **After displaying:** WAIT for user response. Do NOT hallucinate completion. Do NOT continue to next task.
 
 **After user responds:**
@@ -1622,4 +1731,6 @@ Milestone is 100% done.
 - STATE.md updated (position, decisions, issues, session)
 - ROADMAP.md updated
 - If codebase map exists: map updated with execution changes (or skipped if no significant changes)
+- Work-review checkpoint passed (all tasks verified in REVIEW.md)
+- REVIEW.md created alongside SUMMARY.md
   </success_criteria>
