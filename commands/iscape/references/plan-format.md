@@ -96,17 +96,24 @@ Include: technology choices, data structures, behavior details, pitfalls to avoi
 </field>
 
 <field name="verify">
-**What it is**: How to prove the task is complete.
+**What it is**: Executable test command that proves the task is complete.
+
+**Requirements:**
+- Must reference a test file created as part of the task
+- Must be a runnable command (not manual verification)
+- Test file must be listed in the `<files>` element
 
 **Good**:
+- `npm run test -- tests/api/auth/login.test.ts`
+- `pytest tests/test_user_registration.py -v`
+- `go test ./internal/auth/... -run TestLogin`
 
-- `npm test` passes
-- `curl -X POST /api/auth/login` returns 200 with Set-Cookie header
-- Build completes without errors
+**Bad**:
+- "It works", "Looks good", "User can log in" (subjective)
+- `curl -X POST /api/auth/login` (no test, just manual check)
+- `npm test` (too broad, doesn't verify specific task)
 
-**Bad**: "It works", "Looks good", "User can log in"
-
-Must be executable - a command, a test, an observable behavior.
+The verify command output is used by work-reviewer to determine task completion status.
 </field>
 
 <field name="done">
@@ -131,10 +138,10 @@ Tasks have a `type` attribute that determines how they execute:
 ```xml
 <task type="auto">
   <name>Task 3: Create login endpoint with JWT</name>
-  <files>src/app/api/auth/login/route.ts</files>
-  <action>POST endpoint accepting {email, password}. Query User by email, compare password with bcrypt. On match, create JWT with jose library, set as httpOnly cookie (15-min expiry). Return 200. On mismatch, return 401.</action>
-  <verify>curl -X POST localhost:3000/api/auth/login returns 200 with Set-Cookie header</verify>
-  <done>Valid credentials → 200 + cookie. Invalid → 401.</done>
+  <files>src/app/api/auth/login/route.ts, tests/api/auth/login.test.ts</files>
+  <action>POST endpoint accepting {email, password}. Query User by email, compare password with bcrypt. On match, create JWT with jose library, set as httpOnly cookie (15-min expiry). Return 200. On mismatch, return 401. Also create test file covering valid/invalid credentials.</action>
+  <verify>npm run test -- tests/api/auth/login.test.ts</verify>
+  <done>Test passes: valid credentials → 200 + cookie, invalid → 401, missing fields → 400.</done>
 </task>
 ```
 
@@ -223,6 +230,28 @@ Use for: UI/UX verification, visual design checks, animation smoothness, accessi
 Use for: Technology selection, architecture decisions, design choices, feature prioritization.
 
 **Execution:** Claude presents options with balanced pros/cons, waits for decision, proceeds with chosen direction.
+</type>
+
+<type name="checkpoint:work-review">
+**Mandatory quality gate** - Spawns work-reviewer agent to verify all tasks completed.
+
+**Structure:**
+```xml
+<task type="checkpoint:work-review" gate="blocking">
+  <what-to-review>All tasks in this plan</what-to-review>
+  <verification-commands>
+    - [test command from project]
+    - [build command from project]
+  </verification-commands>
+  <agent>work-reviewer</agent>
+  <output>context/phases/XX-name/plans/{phase}-{plan}-REVIEW.md</output>
+  <resume-signal>REVIEW.md shows all tasks ✅ Complete, or human approves remediation</resume-signal>
+</task>
+```
+
+**Required at end of every plan.** Work-reviewer uses git evidence and test output to verify each task.
+
+See `./checkpoints.md` for full checkpoint:work-review specification.
 </type>
 
 **When to use checkpoints:**
@@ -400,6 +429,8 @@ These require Claude to decide WHAT to do. Specify it.
 - "User experience is good"
 - "Code is clean"
 - "Tests pass" (which tests? do they exist?)
+- "npm test" (which tests? the task needs its own test file)
+- `curl localhost:3000/api` (manual check, not a test)
 
 These require subjective judgment. Make it objective.
 </unverifiable_completion>
