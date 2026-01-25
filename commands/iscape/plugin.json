@@ -27,6 +27,14 @@
     "./consider-issues.md",
     "./verify-work.md",
     "./plan-fix.md",
-    "./help.md"
+    "./help.md",
+    "./quick.md",
+    "./debug.md",
+    "./add-todo.md",
+    "./check-todos.md",
+    "./audit-milestone.md",
+    "./plan-milestone-gaps.md",
+    "./settings.md",
+    "./set-profile.md"
   ]
 }
