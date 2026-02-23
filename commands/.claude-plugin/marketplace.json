@@ -1,0 +1,19 @@
+{
+  "name": "local",
+  "description": "Local plugins directory",
+  "owner": {
+    "name": "Infrascape"
+  },
+  "plugins": [
+    {
+      "name": "iscape",
+      "description": "Infrascape development framework - milestone-based planning with specialist agent orchestration",
+      "version": "1.0.0",
+      "author": {
+        "name": "Infrascape"
+      },
+      "source": "./iscape",
+      "category": "development"
+    }
+  ]
+}
