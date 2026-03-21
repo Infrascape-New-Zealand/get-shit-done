@@ -403,6 +403,19 @@ git bisect bad              # or good, based on testing
 
 100 commits between working and broken: ~7 tests to find exact breaking commit.
 
+## Follow the Indirection
+
+**When:** Code constructs paths, URLs, keys, or references from variables — and the constructed value might not point where you expect.
+
+**The trap:** You read code that builds a path like `path.join(configDir, 'hooks')` and assume it's correct because it looks reasonable. But you never verified that the constructed path matches where another part of the system actually writes/reads.
+
+**How:**
+1. Find the code that **produces** the value (writer/installer/creator)
+2. Find the code that **consumes** the value (reader/checker/validator)
+3. Trace the actual resolved value in both — do they agree?
+
+If producer and consumer compute different paths/keys/URLs, that's your bug.
+
 ## Technique Selection
 
 | Situation | Technique |
@@ -413,6 +426,7 @@ git bisect bad              # or good, based on testing
 | Know the desired output | Working backwards |
 | Used to work, now doesn't | Differential debugging, Git bisect |
 | Many possible causes | Comment out everything, Binary search |
+| Code uses constructed paths/keys/URLs | Follow the Indirection |
 | Always | Observability first (before making changes) |
 
 ## Combining Techniques

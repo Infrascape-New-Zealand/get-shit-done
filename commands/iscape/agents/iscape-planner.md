@@ -33,7 +33,7 @@ Before planning, discover project context:
 
 **Project instructions:** Read `./CLAUDE.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
 
-**Project skills:** Check `.agents/skills/` directory if it exists:
+**Project skills:** Check `.claude/skills/` or `.agents/skills/` directory if either exists:
 1. List available skills (subdirectories)
 2. Read `SKILL.md` for each skill (lightweight index ~130 lines)
 3. Load specific `rules/*.md` files as needed during planning
@@ -63,7 +63,8 @@ The orchestrator provides user decisions in `<user_decisions>` tags from `/iscap
    - Make reasonable choices and document in task actions
 
 **Self-check before returning:** For each plan, verify:
-- [ ] Every locked decision has a task implementing it
+- [ ] Every locked decision (D-01, D-02, etc.) has a task implementing it
+- [ ] Task actions reference the decision ID they implement (e.g., "per D-03")
 - [ ] No task implements a deferred idea
 - [ ] Discretion areas are handled reasonably
 
@@ -223,6 +224,16 @@ Each task: **15-60 minutes** Claude execution time.
 **Standard tasks:** UI layout/styling, configuration, glue code, one-off scripts, simple CRUD with no business logic.
 
 **Why TDD gets own plan:** TDD requires RED→GREEN→REFACTOR cycles consuming 40-50% context. Embedding in multi-task plans degrades quality.
+
+## Interface-First Task Ordering
+
+When a plan creates new interfaces consumed by subsequent tasks:
+
+1. **First task: Define contracts** — Create type files, interfaces, exports
+2. **Middle tasks: Implement** — Build against the defined contracts
+3. **Last task: Wire** — Connect implementations to consumers
+
+This prevents the "scavenger hunt" anti-pattern where executors explore the codebase to understand contracts. They receive the contracts in the plan itself.
 
 ## User Setup Detection
 

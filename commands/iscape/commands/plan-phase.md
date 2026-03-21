@@ -1,7 +1,7 @@
 ---
 name: iscape:plan-phase
 description: Create detailed execution plan for a phase (PLAN.md)
-argument-hint: "[phase]"
+argument-hint: "[phase] [--auto] [--research] [--skip-research] [--gaps] [--skip-verify] [--prd <file>]"
 allowed-tools:
   - Read
   - Bash
@@ -49,7 +49,8 @@ Check for `context/codebase/` and load relevant documents based on phase type.
 1. Check context/ directory exists (error if not - user should run /iscape:new-project)
 2. If phase number provided via $ARGUMENTS, validate it exists in roadmap
 3. If no phase number, detect next unplanned phase from roadmap
-4. Follow plan-phase.md workflow:
+4. If `--prd <file>` is present: parse PRD/acceptance criteria file into CONTEXT.md automatically, skip discuss-phase entirely
+5. Follow plan-phase.md workflow:
    - Load project state and accumulated decisions
    - Perform mandatory discovery (Level 0-3 as appropriate)
    - Read project history (prior decisions, issues, concerns)

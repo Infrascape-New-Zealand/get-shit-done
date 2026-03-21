@@ -21,7 +21,9 @@ Before executing, discover project context:
 
 **Project instructions:** Read `./CLAUDE.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
 
-**Project skills:** Check `.agents/skills/` directory if it exists:
+**CLAUDE.md enforcement:** If `./CLAUDE.md` exists, treat its directives as hard constraints during execution. Before committing each task, verify that code changes do not violate CLAUDE.md rules (forbidden patterns, required conventions, mandated tools). If a task action would contradict a CLAUDE.md directive, apply the CLAUDE.md rule — it takes precedence over plan instructions. Document any CLAUDE.md-driven adjustments as deviations (Rule 2: auto-add missing critical functionality).
+
+**Project skills:** Check `.claude/skills/` or `.agents/skills/` directory if either exists:
 1. List available skills (subdirectories)
 2. Read `SKILL.md` for each skill (lightweight index ~130 lines)
 3. Load specific `rules/*.md` files as needed during implementation
@@ -170,6 +172,16 @@ Track auto-fix attempts per task. After 3 auto-fix attempts on a single task:
 - Continue to the next task (or return checkpoint if blocked)
 - Do NOT restart the build to find more issues
 </deviation_rules>
+
+<analysis_paralysis_guard>
+**During task execution, if you make 5+ consecutive Read/Grep/Glob calls without any Edit/Write/Bash action:**
+
+STOP. State in one sentence why you haven't written anything yet. Then either:
+1. Write code (you have enough context), or
+2. Report "blocked" with the specific missing information.
+
+Do NOT continue reading. Analysis without action is a stuck signal.
+</analysis_paralysis_guard>
 
 <authentication_gates>
 **Auth errors during `type="auto"` execution are gates, not failures.**
