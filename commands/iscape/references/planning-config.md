@@ -8,8 +8,16 @@ Configuration options for `context/` directory behavior.
   "commit_docs": true,
   "search_gitignored": false
 },
+"team": {
+  "enabled": false,
+  "name_template": "{phase}-dev-team",
+  "size": 3,
+  "member_model": null
+},
 "git": {
   "branching_strategy": "none",
+  "use_worktree": false,
+  "pr_on_complete": false,
   "phase_branch_template": "iscape/phase-{phase}-{slug}",
   "milestone_branch_template": "iscape/{milestone}-{slug}"
 }
@@ -20,8 +28,14 @@ Configuration options for `context/` directory behavior.
 | `commit_docs` | `true` | Whether to commit planning artifacts to git |
 | `search_gitignored` | `false` | Add `--no-ignore` to broad rg searches |
 | `git.branching_strategy` | `"none"` | Git branching approach: `"none"`, `"phase"`, or `"milestone"` |
+| `git.use_worktree` | `false` | Create isolated git worktree for milestone; all commits go to milestone branch, not main |
+| `git.pr_on_complete` | `false` | Create GitHub PR from milestone branch → main when `complete-milestone` runs |
 | `git.phase_branch_template` | `"iscape/phase-{phase}-{slug}"` | Branch template for phase strategy |
-| `git.milestone_branch_template` | `"iscape/{milestone}-{slug}"` | Branch template for milestone strategy |
+| `git.milestone_branch_template` | `"iscape/{milestone}-{slug}"` | Branch template for milestone/worktree strategy |
+| `team.enabled` | `false` | Use Agent Teams for parallel execution (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) |
+| `team.name_template` | `"{phase}-dev-team"` | Team name pattern; `{phase}` replaced with phase slug |
+| `team.size` | `3` | Number of developer agents to spawn in the team |
+| `team.member_model` | `null` | Model override for all developer agents (null = profile default for `iscape-developer`) |
 </config_schema>
 
 <commit_docs_behavior>
@@ -192,5 +206,69 @@ Squash merge is recommended — keeps main branch history clean while preserving
 | `milestone` | Release branches, staging environments, PR per version |
 
 </branching_strategy_behavior>
+
+<team_config>
+
+## Dev Team Configuration
+
+When `team.enabled: true`, `execute-phase` creates a named Agent Team and spawns parallel developer agents who claim and execute plans from a shared task queue.
+
+**Requirements:**
+- `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` must be set in Claude Code settings env
+- Team feature enabled in Claude Code session
+
+**How it works:**
+1. `execute-phase` calls `TeamCreate` with a team name derived from `team.name_template`
+2. One `TaskCreate` per incomplete plan (plan content embedded in task description)
+3. `team.size` developer agents spawned in parallel — each claims tasks by lowest ID
+4. Developers execute plans using the full `iscape-executor` workflow
+5. Team lead receives completion messages, then calls `TeamDelete`
+
+**Team name template variables:**
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `{phase}` | Phase slug from directory name | `01-foundation` |
+| `{milestone}` | Milestone version | `v1.0` |
+
+**Example config for 2 parallel developers:**
+```json
+{
+  "team": {
+    "enabled": true,
+    "name_template": "{phase}-dev-team",
+    "size": 2,
+    "member_model": null
+  }
+}
+```
+
+**Fallback behavior:** If team execution fails (agent teams not enabled), falls back to standard wave-based Task spawning automatically.
+
+</team_config>
+
+<worktree_config>
+
+## Worktree & PR Configuration
+
+When `git.use_worktree: true`, all milestone execution happens in an isolated git worktree. Main branch is never modified until the milestone PR is merged.
+
+**Requirements:**
+- Git 2.5+ (git worktree support)
+- GitHub CLI (`gh`) for PR creation when `pr_on_complete: true`
+
+**Workflow:**
+1. First `execute-phase` of milestone → creates worktree at `../{project}-{milestone-slug}/`
+2. All phases execute inside that worktree
+3. `complete-milestone` → pushes branch, creates PR, removes worktree
+
+**Works with or without team mode.** Combine both for maximum parallelism with PR-based review:
+```json
+{
+  "team": { "enabled": true, "size": 3 },
+  "git": { "use_worktree": true, "pr_on_complete": true, "branching_strategy": "milestone" }
+}
+```
+
+</worktree_config>
 
 </planning_config>

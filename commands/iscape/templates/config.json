@@ -20,6 +20,19 @@
     "max_concurrent_agents": 3,
     "min_plans_for_parallel": 2
   },
+  "team": {
+    "enabled": false,
+    "name_template": "{phase}-dev-team",
+    "size": 3,
+    "member_model": null
+  },
+  "git": {
+    "branching_strategy": "none",
+    "use_worktree": false,
+    "pr_on_complete": false,
+    "phase_branch_template": "iscape/phase-{phase}-{slug}",
+    "milestone_branch_template": "iscape/{milestone}-{slug}"
+  },
   "gates": {
     "confirm_project": true,
     "confirm_phases": true,

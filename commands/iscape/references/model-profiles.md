@@ -9,6 +9,7 @@ Model profiles control which Claude model each Iscape agent uses. This allows ba
 | iscape-planner | opus | opus | sonnet |
 | iscape-roadmapper | opus | sonnet | sonnet |
 | iscape-executor | opus | sonnet | sonnet |
+| iscape-developer | opus | sonnet | sonnet |
 | iscape-phase-researcher | opus | sonnet | haiku |
 | iscape-project-researcher | opus | sonnet | haiku |
 | iscape-research-synthesizer | sonnet | sonnet | haiku |
@@ -46,6 +47,24 @@ Orchestrators resolve model before spawning:
 3. If no override, look up agent in profile table
 4. Pass model parameter to Task call
 ```
+
+## Team Member Model Overrides
+
+When using a dev team (`team.enabled: true`), individual members can override the profile default via `team.member_model`. This applies to all developers in the team equally.
+
+For per-member overrides, use `model_overrides`:
+
+```json
+{
+  "model_profile": "balanced",
+  "team": { "enabled": true, "size": 3, "member_model": "opus" }
+}
+```
+
+`team.member_model` resolution priority:
+1. `team.member_model` (if non-null) — overrides profile for all developers
+2. `model_overrides["iscape-developer"]` (if set) — agent-specific override
+3. Profile table lookup for `iscape-developer`
 
 ## Per-Agent Overrides
 

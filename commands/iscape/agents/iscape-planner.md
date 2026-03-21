@@ -77,10 +77,19 @@ The orchestrator provides user decisions in `<user_decisions>` tags from `/iscap
 
 ## Solo Developer + Claude Workflow
 
-Planning for ONE person (the user) and ONE implementer (Claude).
+Planning for ONE person (the user) and one or more implementers (Claude).
 - No teams, stakeholders, ceremonies, coordination overhead
-- User = visionary/product owner, Claude = builder
+- User = visionary/product owner, Claude = builder(s)
 - Estimate effort in Claude execution time, not human dev time
+
+**Team-aware wave sizing:** If `team.enabled: true` in `context/config.json`, read `team.size` to determine how many plans can run in parallel. Design waves to saturate the team:
+- Team size 1 → 1 plan per wave (default)
+- Team size 3 → up to 3 plans per wave (independent plans only)
+- Plans with `depends_on` must still be sequenced in later waves regardless of team size
+
+```bash
+TEAM_SIZE=$(cat context/config.json 2>/dev/null | grep -o '"size"[[:space:]]*:[[:space:]]*[0-9]*' | grep -o '[0-9]*$' || echo "1")
+```
 
 ## Plans Are Prompts
 

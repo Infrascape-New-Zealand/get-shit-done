@@ -78,7 +78,68 @@ Output: Milestone archived, roadmap reorganized, git tagged.
    - Tag: `git tag -a v{{version}} -m "[milestone summary]"`
    - Ask about pushing tag
 
-7. **Offer next steps:**
+6.5. **Create PR** (when `git.pr_on_complete: true` in config.json):
+
+   ```bash
+   PR_ON_COMPLETE=$(cat context/config.json 2>/dev/null | grep -o '"pr_on_complete"[[:space:]]*:[[:space:]]*[a-z]*' | grep -o '[a-z]*$' || echo "false")
+   ```
+
+   If `true`:
+   1. Verify `gh` CLI is available: `which gh`
+   2. Identify milestone branch (from `git.milestone_branch_template` or current branch if in worktree)
+   3. Push branch to remote:
+      ```bash
+      git push -u origin "{milestone-branch}"
+      ```
+   4. Create PR:
+      ```bash
+      gh pr create \
+        --title "feat: {milestone-name} v{{version}}" \
+        --base main \
+        --head "{milestone-branch}" \
+        --body "$(cat <<'EOF'
+      ## Milestone v{{version}}: {milestone-name}
+
+      ### Accomplishments
+      {4-6 key accomplishments from step 3}
+
+      ### Phases Completed
+      {phase list with goals}
+
+      ### Stats
+      {plans executed, git tag}
+
+      🤖 Generated with [iscape](https://github.com/infrascape/get-shit-done)
+      EOF
+      )"
+      ```
+   5. Present PR URL to user.
+
+7. **Worktree cleanup** (when `git.use_worktree: true` in config.json):
+
+   ```bash
+   USE_WORKTREE=$(cat context/config.json 2>/dev/null | grep -o '"use_worktree"[[:space:]]*:[[:space:]]*[a-z]*' | grep -o '[a-z]*$' || echo "false")
+   ```
+
+   If `true`:
+   1. Identify worktree path: `git worktree list` (find entry for milestone branch)
+   2. Present to user:
+      ```
+      Worktree: {worktree-path}
+      Branch:   {milestone-branch}
+      PR:       {pr-url or "push and create PR when ready"}
+
+      Remove worktree now? (you can still merge the PR after removal)
+      ```
+   3. If user confirms:
+      ```bash
+      # Ensure we're not inside the worktree before removing
+      cd "{main-repo-path}"
+      git worktree remove "{worktree-path}"
+      ```
+   4. Inform: "Worktree removed. Merge the PR on GitHub when ready."
+
+8. **Offer next steps:**
    - Plan next milestone
    - Archive planning
    - Done for now
@@ -92,6 +153,8 @@ Output: Milestone archived, roadmap reorganized, git tagged.
 - PROJECT.md updated with current state
 - Git tag v{{version}} created
 - Commit successful
+- PR created (if `git.pr_on_complete: true`) from milestone branch → main
+- Worktree removed (if `git.use_worktree: true` and user confirmed)
 - User knows next steps
   </success_criteria>
 

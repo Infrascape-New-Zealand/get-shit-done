@@ -208,6 +208,42 @@ Each plan produces 2-4 commits (tasks + metadata). Clear, granular, bisectable.
 
 </example_log>
 
+<worktree_workflow>
+
+## Milestone Worktree Workflow
+
+When `git.use_worktree: true` in config.json (recommended when using dev teams):
+
+**Setup (first `execute-phase` of a milestone):**
+```bash
+# Derive worktree path and branch from config
+MILESTONE=$(grep -o 'v[0-9.]*' context/ROADMAP.md | head -1)  # e.g., "v1.0"
+MILESTONE_SLUG=$(echo "$MILESTONE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
+BRANCH_NAME="iscape/${MILESTONE}-${MILESTONE_SLUG}"  # e.g., "iscape/v1.0-v1-0"
+WORKTREE_PATH="../$(basename $(pwd))-${MILESTONE_SLUG}"  # e.g., "../myproject-v1-0"
+
+git worktree add -b "$BRANCH_NAME" "$WORKTREE_PATH" main
+```
+
+**During execution:** All plan commits, task commits, SUMMARY commits go to the worktree branch — never to main.
+
+**At `complete-milestone` (with `git.pr_on_complete: true`):**
+```bash
+git push -u origin "$BRANCH_NAME"
+gh pr create --title "feat: milestone $MILESTONE" --base main --head "$BRANCH_NAME" --body "..."
+git worktree remove "$WORKTREE_PATH"
+```
+
+**Benefits:**
+- Main branch stays clean throughout milestone development
+- Full PR review before any code lands on main
+- Worktree can be abandoned without affecting main
+- Multiple milestones can run in parallel (each in its own worktree)
+
+**Commit points are unchanged** — all existing per-task, per-plan, and per-phase commit formats apply. The only difference is WHERE commits land (milestone branch, not main).
+
+</worktree_workflow>
+
 <anti_patterns>
 
 **Still don't commit (intermediate artifacts):**

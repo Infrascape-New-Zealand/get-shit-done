@@ -53,7 +53,7 @@ Phase: $ARGUMENTS
 </context>
 
 <process>
-0. **Resolve Model Profile**
+0. **Resolve Model Profile and Team/Worktree Config**
 
    Read model profile for agent spawning:
    ```bash
@@ -67,9 +67,55 @@ Phase: $ARGUMENTS
    | Agent | quality | balanced | budget |
    |-------|---------|----------|--------|
    | iscape-executor | opus | sonnet | sonnet |
+   | iscape-developer | opus | sonnet | sonnet |
    | iscape-verifier | sonnet | sonnet | haiku |
 
-   Store resolved models for use in Task calls below.
+   Store resolved models for use in Task/Agent calls below.
+
+   Read team and worktree config:
+   ```bash
+   TEAM_ENABLED=$(cat context/config.json 2>/dev/null | grep -o '"team"' | head -1 | grep -c 'team' || echo "0")
+   # Then read full team block: name_template, size, member_model
+   TEAM_SIZE=$(cat context/config.json 2>/dev/null | grep -o '"size"[[:space:]]*:[[:space:]]*[0-9]*' | grep -o '[0-9]*$' || echo "3")
+   USE_WORKTREE=$(cat context/config.json 2>/dev/null | grep -o '"use_worktree"[[:space:]]*:[[:space:]]*[a-z]*' | grep -o '[a-z]*$' || echo "false")
+   # Check if team.enabled is true
+   TEAM_NAME_TEMPLATE=$(cat context/config.json 2>/dev/null | grep -o '"name_template"[[:space:]]*:[[:space:]]*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"' || echo "{phase}-dev-team")
+   ```
+
+   Store for use in steps below.
+
+0.5. **Worktree setup** (when `use_worktree: true`)
+
+   Check git worktree config:
+   ```bash
+   USE_WORKTREE=$(cat context/config.json 2>/dev/null | grep -o '"use_worktree"[[:space:]]*:[[:space:]]*[a-z]*' | grep -o '[a-z]*$' || echo "false")
+   ```
+
+   **If `use_worktree: true`:**
+
+   1. Read milestone version from `context/ROADMAP.md` (look for current milestone heading, e.g., "v1.0")
+   2. Derive milestone branch from `git.milestone_branch_template` (default: `iscape/{milestone}-{slug}`)
+   3. Check current branch:
+      ```bash
+      CURRENT_BRANCH=$(git branch --show-current)
+      ```
+   4. **If already on milestone branch:** Continue — worktree already active.
+   5. **If not on milestone branch:**
+      - Check worktree list: `git worktree list`
+      - If milestone branch worktree exists: `cd {worktree-path}` and continue from there
+      - If no worktree yet: Create one:
+        ```bash
+        MILESTONE="v1.0"  # from ROADMAP.md
+        MILESTONE_SLUG=$(echo "$MILESTONE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
+        PROJECT_NAME=$(basename $(pwd))
+        BRANCH_NAME="iscape/${MILESTONE}-${MILESTONE_SLUG}"
+        WORKTREE_PATH="../${PROJECT_NAME}-${MILESTONE_SLUG}"
+        git worktree add -b "$BRANCH_NAME" "$WORKTREE_PATH" main
+        ```
+      - Inform user: "Created worktree at `{worktree-path}` on branch `{branch}`. All milestone commits will go there."
+      - All subsequent file operations and git commands use the worktree path as working directory.
+
+   **If `use_worktree: false`:** Skip this step.
 
 1. **Validate phase exists**
    - Find phase directory matching argument
@@ -90,11 +136,75 @@ Phase: $ARGUMENTS
 
 4. **Execute waves**
    If `--interactive` is active: execute plans sequentially inline (no subagents), presenting results between each plan for user review.
-   Otherwise, for each wave in order:
+
+   **Otherwise, choose execution path based on team config:**
+
+   **Path A — Standard wave execution** (`team.enabled: false` or team feature unavailable):
+
+   For each wave in order:
    - Spawn `iscape-executor` for each plan in wave (parallel Task calls)
    - Wait for completion (Task blocks)
    - Verify SUMMARYs created
    - Proceed to next wave
+
+   **Path B — Team execution** (`team.enabled: true`):
+
+   1. Resolve team name from `name_template` (replace `{phase}` with current phase slug):
+      ```
+      TEAM_NAME = "{phase}-dev-team"  # e.g., "01-foundation-dev-team"
+      ```
+
+   2. Read all incomplete plan contents and STATE.md upfront (@ syntax doesn't cross agent boundaries):
+      ```bash
+      STATE_CONTENT=$(cat context/STATE.md)
+      PLAN_01_CONTENT=$(cat "{plan_01_path}")
+      # ... for each plan
+      ```
+
+   3. Call `TeamCreate`:
+      ```
+      TeamCreate(team_name="{team_name}", description="Execute phase {phase}: {phase_name}")
+      ```
+
+   4. Create one task per incomplete plan via `TaskCreate` (embed plan content in description):
+      ```
+      TaskCreate(
+        title="Execute {plan-id}: {plan-objective}",
+        description="Plan file: {plan_path}\n\nProject state:\n{state_content}\n\nPlan content:\n{plan_content}"
+      )
+      ```
+      Create all tasks before spawning agents.
+
+   5. Resolve developer model (from `team.member_model` or profile table for `iscape-developer`).
+
+   6. Spawn `team.size` developer agents in a **single message** (parallel start):
+      ```
+      Agent(
+        prompt="You are dev-1 on team {team_name}. Project directory: {cwd}\n\nRead ~/.claude/teams/{team_name}/config.json to find your team lead. Claim tasks from the task list and execute plans per your agent definition.",
+        subagent_type="iscape-developer",
+        team_name="{team_name}",
+        name="dev-1",
+        model="{developer_model}"
+      )
+      Agent(
+        prompt="You are dev-2 on team {team_name}. Project directory: {cwd}\n\n...",
+        subagent_type="iscape-developer",
+        team_name="{team_name}",
+        name="dev-2",
+        model="{developer_model}"
+      )
+      # ... up to team.size agents
+      ```
+
+   7. **Wait** for developer completion messages (delivered automatically when developers send them). Track which plans have SUMMARY.md files created.
+
+   8. **Handle escalations** from developers:
+      - Checkpoint messages → relay to user, collect response, send back to developer via `SendMessage`
+      - Architectural blockers → present to user, send decision back via `SendMessage`
+
+   9. When all tasks are `completed` in task list:
+      - Send shutdown to each developer: `SendMessage(to="dev-N", message={type: "shutdown_request"})`
+      - Call `TeamDelete`
 
 5. **Aggregate results**
    - Collect summaries from all plans
