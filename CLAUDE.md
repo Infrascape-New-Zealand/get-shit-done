@@ -120,6 +120,15 @@ find commands/iscape -name '*.md' -o -name '*.json' | xargs grep -l 'gsd' 2>/dev
 done
 ```
 
+### 4b. Fix subagent_type references
+
+Upstream uses custom agent types (`gsd-executor`, `gsd-planner`, etc.) which become `iscape-executor`, `iscape-planner`, etc. after namespace transformation. Claude Code only supports built-in agent types, so all must be replaced with `general-purpose`:
+
+```bash
+find commands/iscape -name '*.md' | xargs sed -i \
+  's/subagent_type="iscape-[^"]*"/subagent_type="general-purpose"/g'
+```
+
 ### 5. Verify zero remaining gsd references
 
 ```bash
@@ -175,6 +184,7 @@ These iscape-only files must not be overwritten or removed during merges:
 | `~/.gsd/` | `~/.iscape/` |
 | `GSD` (branding) | `Iscape` |
 | `commands/gsd/` | `commands/iscape/commands/` |
+| `subagent_type="iscape-*"` | `subagent_type="general-purpose"` |
 
 ## Customization Notes
 

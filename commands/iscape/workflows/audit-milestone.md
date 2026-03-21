@@ -73,7 +73,7 @@ Milestone Requirements:
 MUST map each integration finding to affected requirement IDs where applicable.
 
 Verify cross-phase wiring and E2E user flows.",
-  subagent_type="iscape-integration-checker",
+  subagent_type="general-purpose",
   model="{integration_checker_model}"
 )
 ```

@@ -19,7 +19,7 @@ Look up the agent in the table for the resolved profile. Pass the model paramete
 ```
 Task(
   prompt="...",
-  subagent_type="iscape-planner",
+  subagent_type="general-purpose",
   model="{resolved_model}"  # "inherit", "sonnet", or "haiku"
 )
 ```

@@ -133,7 +133,7 @@ Omit null file paths from `<files_to_read>`.
 ```
 Task(
   prompt=ui_research_prompt,
-  subagent_type="iscape-ui-researcher",
+  subagent_type="general-purpose",
   model="{UI_RESEARCHER_MODEL}",
   description="UI Design Contract Phase {N}"
 )
@@ -182,7 +182,7 @@ ui_safety_gate: {ui_safety_gate config value}
 ```
 Task(
   prompt=ui_checker_prompt,
-  subagent_type="iscape-ui-checker",
+  subagent_type="general-purpose",
   model="{UI_CHECKER_MODEL}",
   description="Verify UI-SPEC Phase {N}"
 )

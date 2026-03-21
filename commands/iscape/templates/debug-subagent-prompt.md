@@ -55,14 +55,14 @@ Create: context/debug/{slug}.md
 ```python
 Task(
   prompt=filled_template,
-  subagent_type="iscape-debugger",
+  subagent_type="general-purpose",
   description="Debug {slug}"
 )
 ```
 
 **From diagnose-issues (UAT):**
 ```python
-Task(prompt=template, subagent_type="iscape-debugger", description="Debug UAT-001")
+Task(prompt=template, subagent_type="general-purpose", description="Debug UAT-001")
 ```
 
 ---

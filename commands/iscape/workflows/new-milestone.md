@@ -140,7 +140,7 @@ Focus ONLY on what's needed for the NEW features.
 Write to: context/research/{FILE}
 Use template: ./templates/research-project/{FILE}
 </output>
-", subagent_type="iscape-project-researcher", model="{researcher_model}", description="{DIMENSION} research")
+", subagent_type="general-purpose", model="{researcher_model}", description="{DIMENSION} research")
 ```
 
 **Dimension-specific fields:**
@@ -169,7 +169,7 @@ Synthesize research outputs into SUMMARY.md.
 Write to: context/research/SUMMARY.md
 Use template: ./templates/research-project/SUMMARY.md
 Commit after writing.
-", subagent_type="iscape-research-synthesizer", model="{synthesizer_model}", description="Synthesize research")
+", subagent_type="general-purpose", model="{synthesizer_model}", description="Synthesize research")
 ```
 
 Display key findings from SUMMARY.md:
@@ -292,7 +292,7 @@ Create roadmap for milestone v[X.Y]:
 
 Write files first, then return.
 </instructions>
-", subagent_type="iscape-roadmapper", model="{roadmapper_model}", description="Create roadmap")
+", subagent_type="general-purpose", model="{roadmapper_model}", description="Create roadmap")
 ```
 
 **Handle return:**

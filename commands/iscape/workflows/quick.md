@@ -119,7 +119,7 @@ Write plan to: ${QUICK_DIR}/${next_num}-PLAN.md
 Return: ## PLANNING COMPLETE with plan path
 </output>
 ",
-  subagent_type="iscape-planner",
+  subagent_type="general-purpose",
   model="{planner_model}",
   description="Quick plan: ${DESCRIPTION}"
 )
@@ -180,7 +180,7 @@ Skip: context compliance (no CONTEXT.md), cross-plan deps (single plan), ROADMAP
 ```
 Task(
   prompt=checker_prompt,
-  subagent_type="iscape-plan-checker",
+  subagent_type="general-purpose",
   model="{checker_model}",
   description="Check quick plan: ${DESCRIPTION}"
 )
@@ -262,7 +262,7 @@ Execute quick task ${next_num}.
 - Do NOT update ROADMAP.md (quick tasks are separate from planned phases)
 </constraints>
 ",
-  subagent_type="iscape-executor",
+  subagent_type="general-purpose",
   model="{executor_model}",
   description="Execute: ${DESCRIPTION}"
 )
@@ -305,7 +305,7 @@ Task goal: ${DESCRIPTION}
 </files_to_read>
 
 Check must_haves against actual codebase. Create VERIFICATION.md at ${QUICK_DIR}/${next_num}-VERIFICATION.md.",
-  subagent_type="iscape-verifier",
+  subagent_type="general-purpose",
   model="{verifier_model}",
   description="Verify: ${DESCRIPTION}"
 )

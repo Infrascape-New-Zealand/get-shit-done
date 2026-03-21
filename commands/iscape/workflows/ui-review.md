@@ -91,7 +91,7 @@ Omit null file paths.
 ```
 Task(
   prompt=ui_audit_prompt,
-  subagent_type="iscape-ui-auditor",
+  subagent_type="general-purpose",
   model="{UI_AUDITOR_MODEL}",
   description="UI Audit Phase {N}"
 )

@@ -181,14 +181,14 @@ Phase: $ARGUMENTS
       ```
       Agent(
         prompt="You are dev-1 on team {team_name}. Project directory: {cwd}\n\nRead ~/.claude/teams/{team_name}/config.json to find your team lead. Claim tasks from the task list and execute plans per your agent definition.",
-        subagent_type="iscape-developer",
+        subagent_type="general-purpose",
         team_name="{team_name}",
         name="dev-1",
         model="{developer_model}"
       )
       Agent(
         prompt="You are dev-2 on team {team_name}. Project directory: {cwd}\n\n...",
-        subagent_type="iscape-developer",
+        subagent_type="general-purpose",
         team_name="{team_name}",
         name="dev-2",
         model="{developer_model}"
@@ -393,9 +393,9 @@ STATE_CONTENT=$(cat context/STATE.md)
 Spawn all plans in a wave with a single message containing multiple Task calls, with inlined content:
 
 ```
-Task(prompt="Execute plan at {plan_01_path}\n\nPlan:\n{plan_01_content}\n\nProject state:\n{state_content}", subagent_type="iscape-executor", model="{executor_model}")
-Task(prompt="Execute plan at {plan_02_path}\n\nPlan:\n{plan_02_content}\n\nProject state:\n{state_content}", subagent_type="iscape-executor", model="{executor_model}")
-Task(prompt="Execute plan at {plan_03_path}\n\nPlan:\n{plan_03_content}\n\nProject state:\n{state_content}", subagent_type="iscape-executor", model="{executor_model}")
+Task(prompt="Execute plan at {plan_01_path}\n\nPlan:\n{plan_01_content}\n\nProject state:\n{state_content}", subagent_type="general-purpose", model="{executor_model}")
+Task(prompt="Execute plan at {plan_02_path}\n\nPlan:\n{plan_02_content}\n\nProject state:\n{state_content}", subagent_type="general-purpose", model="{executor_model}")
+Task(prompt="Execute plan at {plan_03_path}\n\nPlan:\n{plan_03_content}\n\nProject state:\n{state_content}", subagent_type="general-purpose", model="{executor_model}")
 ```
 
 All three run in parallel. Task tool blocks until all complete.
