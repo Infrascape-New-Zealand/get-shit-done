@@ -169,6 +169,16 @@ phase_context: Phase {phase_number}: {phase_name} — {phase_goal}
 
 ## 8. Spawn iscape-domain-researcher
 
+Resolve agent path — prefer project-local override:
+```bash
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+if [ -f "$PROJECT_ROOT/.claude/agents/iscape-domain-researcher.md" ]; then
+  DOMAIN_AGENT_PATH="$PROJECT_ROOT/.claude/agents/iscape-domain-researcher.md"
+else
+  DOMAIN_AGENT_PATH="${HOME}/.claude/agents/iscape-domain-researcher.md"
+fi
+```
+
 Display:
 ```
 ◆ Step 3/4 — Researching domain context and expert evaluation criteria...
@@ -176,7 +186,7 @@ Display:
 
 Spawn `iscape-domain-researcher` with:
 ```markdown
-Read ~/.claude/agents/iscape-domain-researcher.md for instructions.
+Read {DOMAIN_AGENT_PATH} for instructions.
 
 <objective>
 Research the business domain and expert evaluation criteria for Phase {phase_number}: {phase_name}
