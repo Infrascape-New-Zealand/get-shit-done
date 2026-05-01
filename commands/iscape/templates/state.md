@@ -21,6 +21,7 @@ See: context/PROJECT.md (updated [date])
 Phase: [X] of [Y] ([Phase name])
 Plan: [A] of [B] in current phase
 Status: [Ready to plan / Planning / Ready to execute / In progress / Phase complete]
+worktree_path: [absolute path to milestone worktree, or empty if none]
 Last activity: [YYYY-MM-DD] — [What happened]
 
 Progress: [░░░░░░░░░░] 0%
@@ -127,6 +128,7 @@ Where we are right now:
 - Phase X of Y — which phase
 - Plan A of B — which plan within phase
 - Status — current state
+- **worktree_path** — absolute path to the milestone's git worktree. Set by `new-milestone` after worktree creation. Empty if no worktree was created (legacy projects or git unavailable). Read by `execute-phase` (hard gate) and `plan-phase` (soft gate) to enforce branch isolation.
 - Last activity — what happened most recently
 - Progress bar — visual indicator of overall completion
 

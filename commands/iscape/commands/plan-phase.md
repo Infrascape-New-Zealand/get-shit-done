@@ -46,6 +46,26 @@ Check for `context/codebase/` and load relevant documents based on phase type.
 </context>
 
 <process>
+0. **Worktree awareness check (soft warning)**
+
+   ```bash
+   CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
+   WORKTREE_PATH=$(grep 'worktree_path:' context/STATE.md 2>/dev/null | sed 's/worktree_path:[[:space:]]*//')
+   ```
+
+   **If `CURRENT_BRANCH` is `main` or `master` AND `WORKTREE_PATH` is non-empty:**
+
+   Print this warning and continue (do not block):
+
+   ```
+   Warning: You are on main but a milestone worktree exists at {WORKTREE_PATH}.
+   Planning artifacts will be committed to main, not the milestone branch.
+   To plan inside the worktree: cd {WORKTREE_PATH} then re-run /iscape:plan-phase {N}
+   Continuing on main.
+   ```
+
+   All other cases: proceed silently.
+
 1. Check context/ directory exists (error if not - user should run /iscape:new-project)
 2. If phase number provided via $ARGUMENTS, validate it exists in roadmap
 3. If no phase number, detect next unplanned phase from roadmap

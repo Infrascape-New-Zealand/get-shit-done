@@ -1,5 +1,5 @@
 <overview>
-Git integration for GSD framework.
+Git integration for the Iscape framework.
 </overview>
 
 <core_principle>
@@ -212,18 +212,20 @@ Each plan produces 2-4 commits (tasks + metadata). Clear, granular, bisectable.
 
 ## Milestone Worktree Workflow
 
-When `git.use_worktree: true` in config.json (recommended when using dev teams):
+Worktree isolation is mandatory. Every `new-milestone` unconditionally creates a git worktree from main. Phase execution that runs on `main` is a hard error.
 
-**Setup (first `execute-phase` of a milestone):**
+**Setup (during `new-milestone`, always):**
 ```bash
-# Derive worktree path and branch from config
-MILESTONE=$(grep -o 'v[0-9.]*' context/ROADMAP.md | head -1)  # e.g., "v1.0"
+MILESTONE=$(grep -o 'v[0-9][0-9.]*' context/ROADMAP.md | head -1)  # e.g., "v1.0"
 MILESTONE_SLUG=$(echo "$MILESTONE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
+PROJECT_NAME=$(basename "$(git rev-parse --show-toplevel)")
 BRANCH_NAME="iscape/${MILESTONE}-${MILESTONE_SLUG}"  # e.g., "iscape/v1.0-v1-0"
-WORKTREE_PATH="../$(basename $(pwd))-${MILESTONE_SLUG}"  # e.g., "../myproject-v1-0"
+WORKTREE_PATH="$(git rev-parse --show-toplevel)/../${PROJECT_NAME}-${MILESTONE_SLUG}"
 
 git worktree add -b "$BRANCH_NAME" "$WORKTREE_PATH" main
 ```
+
+Worktree path stored in `context/STATE.md` under `worktree_path:` field. User must `cd {WORKTREE_PATH}` before running any phase commands.
 
 **During execution:** All plan commits, task commits, SUMMARY commits go to the worktree branch — never to main.
 
@@ -234,13 +236,13 @@ gh pr create --title "feat: milestone $MILESTONE" --base main --head "$BRANCH_NA
 git worktree remove "$WORKTREE_PATH"
 ```
 
-**Benefits:**
-- Main branch stays clean throughout milestone development
-- Full PR review before any code lands on main
-- Worktree can be abandoned without affecting main
-- Multiple milestones can run in parallel (each in its own worktree)
-
 **Commit points are unchanged** — all existing per-task, per-plan, and per-phase commit formats apply. The only difference is WHERE commits land (milestone branch, not main).
+
+**Edge cases:**
+
+- **Worktree already exists** (resume — `new-milestone` re-run): `new-milestone` detects via `git worktree list --porcelain` and skips `git worktree add`. `worktree_path` in STATE.md is refreshed.
+- **Branch exists but worktree directory is gone** (crash recovery): `git worktree add "$WORKTREE_PATH" "$BRANCH_NAME"` (no `-b`) re-attaches the existing branch.
+- **Git unavailable or git < 2.5**: `new-milestone` prints a warning and skips worktree creation. No `worktree_path:` written to STATE.md. `execute-phase` gate treats empty `worktree_path` as a soft pass (warning only, no hard block).
 
 </worktree_workflow>
 

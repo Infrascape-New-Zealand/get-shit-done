@@ -53,7 +53,47 @@ Phase: $ARGUMENTS
 </context>
 
 <process>
-0. **Resolve Model Profile and Team/Worktree Config**
+0. **Worktree gate (mandatory)**
+
+   Run before any other step. Hard block — not a warning.
+
+   ```bash
+   CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+   ```
+
+   **If `CURRENT_BRANCH` is `main` or `master`:**
+
+   Read STATE.md for the expected worktree path:
+   ```bash
+   WORKTREE_PATH=$(grep 'worktree_path:' context/STATE.md 2>/dev/null | sed 's/worktree_path:[[:space:]]*//')
+   ```
+
+   **If `WORKTREE_PATH` is non-empty:** STOP. Output this error and exit immediately — do not continue to any other step:
+
+   ```
+   Error: execute-phase must run from the milestone worktree, not main.
+
+   You are on:       main
+   Expected worktree: {WORKTREE_PATH}
+
+   Switch to the milestone worktree first:
+
+     cd {WORKTREE_PATH}
+
+   Then re-run:
+
+     /iscape:execute-phase {N}
+   ```
+
+   **If `WORKTREE_PATH` is empty** (worktree creation failed during new-milestone, or project predates this feature):
+   Print soft warning and continue:
+   ```
+   Warning: Running on main — no milestone worktree found in STATE.md. Continuing without isolation.
+   ```
+
+   **If `CURRENT_BRANCH` is NOT `main`/`master`:** proceed normally.
+
+1. **Resolve Model Profile and Team Config**
 
    Read model profile for agent spawning:
    ```bash
@@ -72,69 +112,35 @@ Phase: $ARGUMENTS
 
    Store resolved models for use in Task/Agent calls below.
 
-   Read team and worktree config:
+   Read team config:
    ```bash
    TEAM_ENABLED=$(cat context/config.json 2>/dev/null | grep -o '"team"' | head -1 | grep -c 'team' || echo "0")
    # Then read full team block: name_template, size, member_model
    TEAM_SIZE=$(cat context/config.json 2>/dev/null | grep -o '"size"[[:space:]]*:[[:space:]]*[0-9]*' | grep -o '[0-9]*$' || echo "3")
-   USE_WORKTREE=$(cat context/config.json 2>/dev/null | grep -o '"use_worktree"[[:space:]]*:[[:space:]]*[a-z]*' | grep -o '[a-z]*$' || echo "false")
    # Check if team.enabled is true
    TEAM_NAME_TEMPLATE=$(cat context/config.json 2>/dev/null | grep -o '"name_template"[[:space:]]*:[[:space:]]*"[^"]*"' | grep -o '"[^"]*"$' | tr -d '"' || echo "{phase}-dev-team")
    ```
 
    Store for use in steps below.
 
-0.5. **Worktree setup** (when `use_worktree: true`)
-
-   Check git worktree config:
-   ```bash
-   USE_WORKTREE=$(cat context/config.json 2>/dev/null | grep -o '"use_worktree"[[:space:]]*:[[:space:]]*[a-z]*' | grep -o '[a-z]*$' || echo "false")
-   ```
-
-   **If `use_worktree: true`:**
-
-   1. Read milestone version from `context/ROADMAP.md` (look for current milestone heading, e.g., "v1.0")
-   2. Derive milestone branch from `git.milestone_branch_template` (default: `iscape/{milestone}-{slug}`)
-   3. Check current branch:
-      ```bash
-      CURRENT_BRANCH=$(git branch --show-current)
-      ```
-   4. **If already on milestone branch:** Continue — worktree already active.
-   5. **If not on milestone branch:**
-      - Check worktree list: `git worktree list`
-      - If milestone branch worktree exists: `cd {worktree-path}` and continue from there
-      - If no worktree yet: Create one:
-        ```bash
-        MILESTONE="v1.0"  # from ROADMAP.md
-        MILESTONE_SLUG=$(echo "$MILESTONE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
-        PROJECT_NAME=$(basename $(pwd))
-        BRANCH_NAME="iscape/${MILESTONE}-${MILESTONE_SLUG}"
-        WORKTREE_PATH="../${PROJECT_NAME}-${MILESTONE_SLUG}"
-        git worktree add -b "$BRANCH_NAME" "$WORKTREE_PATH" main
-        ```
-      - Inform user: "Created worktree at `{worktree-path}` on branch `{branch}`. All milestone commits will go there."
-      - All subsequent file operations and git commands use the worktree path as working directory.
-
-   **If `use_worktree: false`:** Skip this step.
-
-1. **Validate phase exists**
+2. **Validate phase exists**
    - Find phase directory matching argument
    - Count PLAN.md files
    - Error if no plans found
 
-2. **Discover plans**
+3. **Discover plans**
    - List all *-PLAN.md files in phase directory
    - Check which have *-SUMMARY.md (already complete)
    - If `--gaps-only`: filter to only plans with `gap_closure: true`
    - If `--wave N`: filter to only plans in that wave; skip plans in other waves
    - Build list of incomplete plans
 
-3. **Group by wave**
+4. **Group by wave**
    - Read `wave` from each plan's frontmatter
    - Group plans by wave number
    - Report wave structure to user
 
-4. **Execute waves**
+5. **Execute waves**
    If `--interactive` is active: execute plans sequentially inline (no subagents), presenting results between each plan for user review.
 
    **Otherwise, choose execution path based on team config:**
@@ -206,11 +212,11 @@ Phase: $ARGUMENTS
       - Send shutdown to each developer: `SendMessage(to="dev-N", message={type: "shutdown_request"})`
       - Call `TeamDelete`
 
-5. **Aggregate results**
+6. **Aggregate results**
    - Collect summaries from all plans
    - Report phase completion status
 
-6. **Commit any orchestrator corrections**
+7. **Commit any orchestrator corrections**
    Check for uncommitted changes before verification:
    ```bash
    git status --porcelain
@@ -223,32 +229,32 @@ Phase: $ARGUMENTS
 
    **If clean:** Continue to verification.
 
-7. **Verify phase goal**
+8. **Verify phase goal**
    Check config: `WORKFLOW_VERIFIER=$(cat context/config.json 2>/dev/null | grep -o '"verifier"[[:space:]]*:[[:space:]]*[^,}]*' | grep -o 'true\|false' || echo "true")`
 
-   **If `workflow.verifier` is `false`:** Skip to step 8 (treat as passed).
+   **If `workflow.verifier` is `false`:** Skip to step 9 (treat as passed).
 
    **Otherwise:**
    - Spawn `iscape-verifier` subagent with phase directory and goal
    - Verifier checks must_haves against actual codebase (not SUMMARY claims)
    - Creates VERIFICATION.md with detailed report
    - Route by status:
-     - `passed` → continue to step 8
+     - `passed` → continue to step 9
      - `human_needed` → present items, get approval or feedback
      - `gaps_found` → present gaps, offer `/iscape:plan-phase {X} --gaps`
 
-8. **Update roadmap and state**
+9. **Update roadmap and state**
    - Update ROADMAP.md, STATE.md
 
-9. **Update requirements**
-   Mark phase requirements as Complete:
-   - Read ROADMAP.md, find this phase's `Requirements:` line (e.g., "AUTH-01, AUTH-02")
-   - Read REQUIREMENTS.md traceability table
-   - For each REQ-ID in this phase: change Status from "Pending" to "Complete"
-   - Write updated REQUIREMENTS.md
-   - Skip if: REQUIREMENTS.md doesn't exist, or phase has no Requirements line
+10. **Update requirements**
+    Mark phase requirements as Complete:
+    - Read ROADMAP.md, find this phase's `Requirements:` line (e.g., "AUTH-01, AUTH-02")
+    - Read REQUIREMENTS.md traceability table
+    - For each REQ-ID in this phase: change Status from "Pending" to "Complete"
+    - Write updated REQUIREMENTS.md
+    - Skip if: REQUIREMENTS.md doesn't exist, or phase has no Requirements line
 
-10. **Commit phase completion**
+11. **Commit phase completion**
     Check `COMMIT_PLANNING_DOCS` from config.json (default: true).
     If false: Skip git operations for context/ files.
     If true: Bundle all phase metadata updates in one commit:
@@ -256,7 +262,7 @@ Phase: $ARGUMENTS
     - Stage REQUIREMENTS.md if updated: `git add context/REQUIREMENTS.md`
     - Commit: `docs({phase}): complete {phase-name} phase`
 
-11. **Offer next steps**
+12. **Offer next steps**
     - Route to next action (see `<offer_next>`)
 </process>
 

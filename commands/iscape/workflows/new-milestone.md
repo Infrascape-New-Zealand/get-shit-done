@@ -333,7 +333,59 @@ Success criteria:
 node ./bin/iscape-tools.cjs commit "docs: create milestone v[X.Y] roadmap ([N] phases)" --files context/ROADMAP.md context/STATE.md context/REQUIREMENTS.md
 ```
 
-## 11. Done
+## 11. Create Milestone Worktree
+
+All phase work must happen in an isolated git worktree — never on main. Create it now.
+
+**Derive worktree coordinates from the milestone just written to ROADMAP.md:**
+
+```bash
+MILESTONE=$(grep -o 'v[0-9][0-9.]*' context/ROADMAP.md | head -1)
+MILESTONE_SLUG=$(echo "$MILESTONE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
+PROJECT_NAME=$(basename "$(git rev-parse --show-toplevel)")
+BRANCH_NAME="iscape/${MILESTONE}-${MILESTONE_SLUG}"
+WORKTREE_PATH="$(git rev-parse --show-toplevel)/../${PROJECT_NAME}-${MILESTONE_SLUG}"
+```
+
+**Choose the correct git command based on state:**
+
+1. **Worktree already exists at path** (resume — e.g., `new-milestone` re-run):
+   ```bash
+   git worktree list --porcelain | grep -F "worktree ${WORKTREE_PATH}"
+   ```
+   If found: skip `git worktree add`. Still write `worktree_path` to STATE.md.
+
+2. **Branch exists but worktree directory is gone** (crash recovery):
+   ```bash
+   git branch --list "$BRANCH_NAME"  # non-empty result
+   git worktree add "$WORKTREE_PATH" "$BRANCH_NAME"  # no -b flag, attach to existing branch
+   ```
+
+3. **Clean new milestone:**
+   ```bash
+   git worktree add -b "$BRANCH_NAME" "$WORKTREE_PATH" main
+   ```
+
+**On success — write `worktree_path` to `context/STATE.md`:**
+
+Add (or update) a `worktree_path:` line in the `## Current Position` section:
+
+```
+worktree_path: {WORKTREE_PATH}
+```
+
+Write this to STATE.md in the **main repo** (the user has not yet cd'd into the worktree).
+
+**On failure** (git unavailable, git < 2.5, or `git worktree add` errors):
+
+Print warning and continue — do NOT write `worktree_path` to STATE.md:
+
+```
+Warning: Could not create git worktree — {reason}.
+All work will land on the current branch. Re-run /iscape:new-milestone to retry.
+```
+
+## 12. Done
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -349,9 +401,19 @@ node ./bin/iscape-tools.cjs commit "docs: create milestone v[X.Y] roadmap ([N] p
 | Requirements   | `context/REQUIREMENTS.md` |
 | Roadmap        | `context/ROADMAP.md`      |
 
-**[N] phases** | **[X] requirements** | Ready to build ✓
+**[N] phases** | **[X] requirements** | Worktree created ✓
 
-## ▶ Next Up
+───────────────────────────────────────────────────────
+
+## ▶ Before Anything Else: Switch to Milestone Worktree
+
+All phase work MUST happen in the milestone worktree — not on main.
+
+```
+cd [WORKTREE_PATH]
+```
+
+**Then** (from inside the worktree):
 
 **Phase [N]: [Phase Name]** — [Goal]
 
@@ -361,6 +423,8 @@ node ./bin/iscape-tools.cjs commit "docs: create milestone v[X.Y] roadmap ([N] p
 
 Also: `/iscape:plan-phase [N]` — skip discussion, plan directly
 ```
+
+_(If worktree creation failed in step 11: omit the `cd` instruction and show the normal "Ready to build ✓" badge with the standard next steps.)_
 
 </process>
 
