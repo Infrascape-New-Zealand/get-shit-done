@@ -58,6 +58,70 @@ Parse phase details from roadmap:
 Continue to check_existing.
 </step>
 
+<step name="domain_consultation">
+Check for a project-local domain researcher override:
+
+```bash
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+DOMAIN_AGENT_PATH=""
+if [ -f "$PROJECT_ROOT/.claude/agents/iscape-domain-researcher.md" ]; then
+  DOMAIN_AGENT_PATH="$PROJECT_ROOT/.claude/agents/iscape-domain-researcher.md"
+fi
+```
+
+**If `DOMAIN_AGENT_PATH` is non-empty:**
+
+Display:
+```
+◆ Consulting domain researcher for Phase ${PHASE_NUMBER}: ${PHASE_NAME}...
+```
+
+Spawn domain researcher with:
+```markdown
+Read {DOMAIN_AGENT_PATH} for instructions.
+
+<objective>
+Pre-discussion domain brief for Phase {PHASE_NUMBER}: {PHASE_NAME}.
+
+You are being consulted BEFORE the user discusses their vision. Your job is to surface
+compliance and domain considerations they should be aware of going in.
+
+Do NOT write Section 1b of AI-SPEC.md. Instead, produce a short plain-text brief (under 300 words):
+
+1. **Domain constraints** — regulatory or compliance rules that directly apply to this phase
+2. **Risk flags** — 2-3 things that could go wrong from a compliance/domain perspective  
+3. **Discussion questions** — 2-3 specific questions the orchestrator should raise during the user conversation
+
+Be specific to the phase goal. Do not pad with generic compliance advice.
+</objective>
+
+<files_to_read>
+context/ROADMAP.md
+context/REQUIREMENTS.md (if exists)
+</files_to_read>
+
+<input>
+phase_number: {PHASE_NUMBER}
+phase_name: {PHASE_NAME}
+phase_goal: {PHASE_GOAL}
+</input>
+```
+
+After spawn returns, display brief inline and store the discussion questions as `DOMAIN_QUESTIONS`:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ Domain Consultation ✓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{brief}
+
+───────────────────────────────────────────────────────
+```
+
+**If `DOMAIN_AGENT_PATH` is empty:** Skip this step silently.
+</step>
+
 <step name="check_existing">
 Check if CONTEXT.md already exists for this phase:
 
@@ -132,6 +196,10 @@ If they seem to have specific ideas, use AskUserQuestion:
 - header: "Specifics"
 - question: "Any particular look/feel/behavior in mind?"
 - options: Contextual options based on what they've said + "No specifics" + "Let me describe"
+
+**Domain questions (if `DOMAIN_QUESTIONS` is set from domain_consultation):**
+
+After the standard questions, surface each domain question via AskUserQuestion. Frame them as compliance-grounding questions — not interrogation. Example header: "Compliance" or the specific domain area.
 
 CRITICAL — What NOT to ask:
 - Technical risks (you figure those out)
